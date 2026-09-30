@@ -21,17 +21,6 @@
   overflow: hidden;
 }
 
-.world-map__image {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: fill;
-
-  pointer-events: none;
-}
 
 .world-map__events {
   position: absolute;
@@ -241,43 +230,141 @@
   font-size: 10px;
   line-height: 1.3;
 }
-.world-map__calibration {
+
+
+/* INTERACTIVE SVG */
+
+.world-map__interactive {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 1;
+}
+
+.world-map__svg {
+  width: 100%;
+  height: 100%;
+}
+
+.world-map__svg svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Países.
+ *
+ * Usamos !important porque world.svg
+ * contiene sus propios estilos internos.
+ */
+
+.world-map__svg .land {
+  cursor: pointer;
+
+  transition:
+    fill 120ms ease,
+    filter 120ms ease;
+}
+
+.world-map__svg .land:hover {
+  fill: #8eaa96 !important;
+
+  filter:
+    drop-shadow(
+      0 0 3px
+      rgba(55, 90, 65, 0.22)
+    );
+}
+
+
+/* COUNTRY TOOLTIP */
+
+.world-map__country-tooltip {
   position: absolute;
 
-  z-index: 100;
+  z-index: 30;
 
-  width: 1px;
-  height: 1px;
+  padding: 5px 8px;
 
-  background: #ff00ff;
+  border: 1px solid
+    rgba(75, 100, 82, 0.16);
 
-  transform: translate(-50%, -50%);
+  border-radius: 5px;
+
+  background:
+    rgba(255, 255, 255, 0.96);
+
+  color: #24352a;
+
+  font-size: 10px;
+  font-weight: 650;
+
+  letter-spacing: 0.02em;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 3px 12px
+    rgba(20, 40, 25, 0.08);
+
+  transform:
+    translate(10px, 10px);
 
   pointer-events: none;
 }
 
-.world-map__calibration span {
-  display: none;
+
+/* EVENT LAYER */
+
+.world-map__events {
+  position: absolute;
+  inset: 0;
+
+  z-index: 5;
+
+  width: 100%;
+  height: 100%;
+
+  /*
+   * Permite atravesar esta capa
+   * y alcanzar los países.
+   */
+  pointer-events: none;
 }
 
-.world-map__calibration small {
-  position: absolute;
+.world-map__marker {
+  /*
+   * Pero los markers siguen
+   * siendo interactivos.
+   */
+  pointer-events: auto;
+}
 
-  top: 4px;
-  left: 4px;
+.world-map__svg .land {
+  fill: #c7d5cb !important;
+  fill-opacity: 1 !important;
 
-  width: max-content;
+  stroke: #6f8d78 !important;
+  stroke-opacity: 0.75 !important;
 
-  padding: 1px 3px;
+  cursor: pointer;
 
-  background: rgba(255, 255, 255, 0.75);
+  transition:
+    fill 120ms ease,
+    filter 120ms ease;
+}
 
-  color: #d000d0;
+.world-map__svg .land:hover {
+  fill: #8eaa96 !important;
 
-  font-size: 7px;
-  font-weight: 700;
-
-  line-height: 1;
-
-  pointer-events: none;
+  filter:
+    drop-shadow(
+      0 0 3px
+      rgba(55, 90, 65, 0.22)
+    );
 }

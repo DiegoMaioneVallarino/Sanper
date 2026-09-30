@@ -2,6 +2,10 @@ import type {
   GlobalEvent,
 } from "../../types/event.types";
 
+import {
+  InteractiveWorldMap,
+} from "./InteractiveWorldMap";
+
 import "./WorldMap.css";
 
 interface WorldMapProps {
@@ -14,12 +18,8 @@ export function WorldMap({
   return (
     <div className="world-map">
       <div className="world-map__canvas">
-        <img
-          className="world-map__image"
-          src="/maps/world.svg"
-          alt=""
-          aria-hidden="true"
-        />
+
+        <InteractiveWorldMap />
 
         <div className="world-map__events">
           {events.map((event) => {
@@ -80,20 +80,6 @@ export function WorldMap({
   );
 }
 
-/*
- * Transformación calibrada específicamente
- * para public/maps/world.svg.
- *
- * Calculada a partir de puntos de referencia
- * distribuidos por el mapa:
- *
- * Ciudad de México
- * Quito
- * Londres
- * Ciudad del Cabo
- * Singapur
- * Tokio
- */
 function coordinatesToPercent(
   latitude: number,
   longitude: number,
