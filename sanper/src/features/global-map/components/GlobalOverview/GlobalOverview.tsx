@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 
 import { mockEvents } from "../../data/mockEvents";
+import { WorldMap } from "../WorldMap/WorldMap";
+
 
 import "./GlobalOverview.css";
 
@@ -33,32 +35,8 @@ export function GlobalOverview() {
         <div className="global-overview__map">
 
           <div className="global-overview__map-background">
-            <WorldPlaceholder />
-
-            <span
-              className="
-                global-overview__marker
-                global-overview__marker--europe
-                global-overview__marker--high
-              "
-            />
-
-            <span
-              className="
-                global-overview__marker
-                global-overview__marker--middle-east
-                global-overview__marker--high
-              "
-            />
-
-            <span
-              className="
-                global-overview__marker
-                global-overview__marker--asia
-                global-overview__marker--medium
-              "
-            />
-          </div>
+  <WorldMap events={mockEvents} />
+</div>
 
           <div className="global-overview__legend">
             <LegendItem
@@ -158,14 +136,3 @@ function LegendItem({
   );
 }
 
-function WorldPlaceholder() {
-  return (
-    <div className="global-overview__world">
-      <span className="global-overview__continent global-overview__continent--america" />
-      <span className="global-overview__continent global-overview__continent--europe" />
-      <span className="global-overview__continent global-overview__continent--africa" />
-      <span className="global-overview__continent global-overview__continent--asia" />
-      <span className="global-overview__continent global-overview__continent--oceania" />
-    </div>
-  );
-}

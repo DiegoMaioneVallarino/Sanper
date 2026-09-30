@@ -1,4 +1,6 @@
-import type { GlobalEvent } from "../types/event.types";
+import type {
+  GlobalEvent,
+} from "../types/event.types";
 
 export const mockEvents: GlobalEvent[] = [
   {
@@ -12,17 +14,20 @@ export const mockEvents: GlobalEvent[] = [
 
     region: "Europa",
 
+    location: {
+      name: "Bruselas, Bélgica",
+      latitude: 50.8503,
+      longitude: 4.3517,
+    },
+
     category: "economy",
     importance: "international",
     relevance: "high",
 
-    latitude: 50.85,
-    longitude: 4.35,
-
     countryCodes: [
+      "BE",
       "DE",
       "FR",
-      "BE",
       "IT",
     ],
 
@@ -42,22 +47,24 @@ export const mockEvents: GlobalEvent[] = [
       "Mercados energéticos bajo presión",
 
     summary:
-      "La incertidumbre regional vuelve a introducir volatilidad en petróleo y gas.",
+      "La incertidumbre sobre el tránsito marítimo vuelve a introducir volatilidad en petróleo y gas.",
 
     region: "Medio Oriente",
+
+    location: {
+      name: "Estrecho de Ormuz",
+      latitude: 26.56,
+      longitude: 56.25,
+    },
 
     category: "energy",
     importance: "international",
     relevance: "high",
 
-    latitude: 29.3,
-    longitude: 47.5,
-
     countryCodes: [
-      "SA",
+      "IR",
+      "OM",
       "AE",
-      "QA",
-      "KW",
     ],
 
     startedAt: "2026-09-29T07:30:00",
@@ -80,12 +87,15 @@ export const mockEvents: GlobalEvent[] = [
 
     region: "Asia-Pacífico",
 
+    location: {
+      name: "Taiwán",
+      latitude: 23.6978,
+      longitude: 120.9605,
+    },
+
     category: "technology",
     importance: "international",
     relevance: "medium",
-
-    latitude: 25.03,
-    longitude: 121.56,
 
     countryCodes: [
       "TW",

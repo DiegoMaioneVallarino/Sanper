@@ -18,6 +18,13 @@ export type EventRelevance =
   | "medium"
   | "monitoring";
 
+export interface EventLocation {
+  name: string;
+
+  latitude: number;
+  longitude: number;
+}
+
 export interface GlobalEvent {
   id: string;
 
@@ -26,12 +33,11 @@ export interface GlobalEvent {
 
   region: string;
 
+  location: EventLocation;
+
   category: EventCategory;
   importance: EventImportance;
   relevance: EventRelevance;
-
-  latitude: number;
-  longitude: number;
 
   countryCodes: string[];
 
