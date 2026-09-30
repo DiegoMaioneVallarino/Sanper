@@ -10,7 +10,8 @@ export type ArticleCategory =
   | "Mercados"
   | "Tecnología"
   | "Energía"
-  | "Global";
+  | "Global"
+  | "Análisis";
 
 export interface Article {
   id: string;

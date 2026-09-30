@@ -1,7 +1,10 @@
 .header {
+  position: relative;
+  z-index: 100;
+
   width: 100%;
 
-  background: var(--color-background);
+  background: rgba(255, 255, 255, 0.96);
 
   border-bottom: 1px solid var(--color-border);
 }
@@ -15,36 +18,46 @@
     var(--page-width)
   );
 
-  height: 72px;
+  height: 68px;
 
   margin: 0 auto;
 }
 
+/* BRAND */
+
 .header__brand {
-  margin-right: 48px;
+  flex-shrink: 0;
+
+  margin-right: 44px;
 
   color: var(--color-text);
 
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 750;
-  letter-spacing: -0.04em;
+
+  line-height: 1;
+
+  letter-spacing: -0.045em;
 
   text-decoration: none;
 }
 
+/* NAV */
+
 .header__nav {
   display: flex;
-  align-items: center;
-  gap: 30px;
+  align-items: stretch;
 
   height: 100%;
 }
 
-.header__nav a {
+.header__link {
+  position: relative;
+
   display: flex;
   align-items: center;
 
-  height: 100%;
+  padding: 0 14px;
 
   color: var(--color-text-secondary);
 
@@ -52,30 +65,109 @@
   font-weight: 500;
 
   text-decoration: none;
+
+  transition:
+    color 140ms ease,
+    background 140ms ease;
 }
 
-.header__nav a:hover {
+.header__link:hover {
+  color: var(--color-text);
+
+  background: var(--color-surface);
+}
+
+.header__link--active {
   color: var(--color-text);
 }
 
-.header__nav a.active {
-  color: var(--color-text);
+.header__link--active::after {
+  position: absolute;
+
+  right: 14px;
+  bottom: -1px;
+  left: 14px;
+
+  height: 2px;
+
+  background: var(--color-text);
+
+  content: "";
 }
+
+/* ACTIONS */
 
 .header__actions {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
   margin-left: auto;
 }
 
-.header__actions button {
+.header__action,
+.header__profile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
   border: 0;
+  border-radius: 50%;
 
   background: transparent;
 
+  color: var(--color-text);
+
   cursor: pointer;
+
+  transition: background 140ms ease;
 }
 
-@media (max-width: 900px) {
+.header__action:hover,
+.header__profile:hover {
+  background: var(--color-surface);
+}
+
+.header__action svg,
+.header__profile svg {
+  width: 19px;
+  height: 19px;
+
+  fill: none;
+
+  stroke: currentColor;
+  stroke-width: 1.7;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+  .header__link {
+    padding: 0 9px;
+
+    font-size: 12px;
+  }
+
+  .header__brand {
+    margin-right: 24px;
+  }
+}
+
+@media (max-width: 850px) {
   .header__nav {
     display: none;
+  }
+
+  .header__inner {
+    width: calc(100% - 32px);
   }
 }

@@ -94,4 +94,96 @@ export const mockArticles: Article[] = [
     publishedAt: "2026-09-29T08:00:00",
     readingTime: 5,
   },
+  {
+  id: "article-5",
+  slug: "infraestructura-inteligencia-artificial",
+
+  title:
+    "La nueva carrera por la infraestructura de inteligencia artificial",
+
+  excerpt:
+    "Gobiernos, empresas tecnológicas y fondos de inversión están compitiendo por controlar la infraestructura que sostendrá la próxima generación de inteligencia artificial.",
+
+  category: "Tecnología",
+
+  image: "/images/datacenter.jfif",
+
+  author: {
+    id: "sofia-mendoza",
+    name: "Sofía Mendoza",
+  },
+
+  publishedAt: "2026-09-28T18:00:00",
+  readingTime: 12,
+},
+
+{
+  id: "article-6",
+  slug: "fragmentacion-comercio-mundial",
+
+  title:
+    "La fragmentación del comercio mundial ya está cambiando las cadenas de suministro",
+
+  excerpt:
+    "Empresas y gobiernos reconsideran dónde producir, transportar y almacenar bienes estratégicos.",
+
+  category: "Economía",
+
+  image: "/images/cargo.jfif",
+
+  author: {
+    id: "martin-rojas",
+    name: "Martín Rojas",
+  },
+
+  publishedAt: "2026-09-28T15:30:00",
+  readingTime: 9,
+},
+
+{
+  id: "article-7",
+  slug: "energia-proxima-decada",
+
+  title:
+    "La próxima década energética no tendrá un único ganador",
+
+  excerpt:
+    "Renovables, gas, nuclear y almacenamiento competirán dentro de sistemas energéticos cada vez más complejos.",
+
+  category: "Energía",
+
+  image: "/images/energy.jfif",
+
+  author: {
+    id: "lucas-herrera",
+    name: "Lucas Herrera",
+  },
+
+  publishedAt: "2026-09-28T11:00:00",
+  readingTime: 10,
+},
+
+{
+  id: "article-8",
+  slug: "nuevo-poder-capital",
+
+  title:
+    "Dónde se está concentrando el nuevo poder del capital global",
+
+  excerpt:
+    "La inversión en tecnología, energía e infraestructura está modificando los centros tradicionales de poder económico.",
+
+  category: "Mercados",
+
+  image: "/images/markets.jfif",
+
+  author: {
+    id: "valentina-cruz",
+    name: "Valentina Cruz",
+  },
+
+  publishedAt: "2026-09-27T20:00:00",
+  readingTime: 11,
+},
 ];
+

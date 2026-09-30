@@ -1,0 +1,286 @@
+.deep-analysis {
+  margin-top: 96px;
+  padding-top: 32px;
+
+  border-top: 1px solid var(--color-border);
+}
+
+/* HEADER */
+
+.deep-analysis__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 32px;
+
+  margin-bottom: 30px;
+}
+
+.deep-analysis__eyebrow {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--color-accent);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.deep-analysis__heading {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 36px;
+  font-weight: 500;
+
+  letter-spacing: -0.035em;
+}
+
+.deep-analysis__all {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding-bottom: 5px;
+
+  color: var(--color-text);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+/* LEAD STORY */
+
+.deep-analysis__lead {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 0.9fr)
+    minmax(400px, 1.1fr);
+
+  gap: 56px;
+
+  padding: 38px 0;
+
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.deep-analysis__lead-content {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+}
+
+.deep-analysis__category {
+  display: block;
+
+  margin-bottom: 13px;
+
+  color: var(--color-accent);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.deep-analysis__lead-title {
+  max-width: 650px;
+
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(34px, 3.2vw, 48px);
+  font-weight: 500;
+
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.deep-analysis__lead-excerpt {
+  max-width: 620px;
+
+  margin: 20px 0 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.deep-analysis__meta {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  margin-top: 22px;
+
+  color: var(--color-text-muted);
+
+  font-size: 11px;
+}
+
+.deep-analysis__lead-media {
+  min-height: 380px;
+
+  overflow: hidden;
+}
+
+.deep-analysis__lead-media img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: transform 450ms ease;
+}
+
+.deep-analysis__lead:hover
+  .deep-analysis__lead-media img {
+  transform: scale(1.015);
+}
+
+/* SECONDARY ANALYSIS */
+
+.deep-analysis__secondary {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.deep-analysis__article {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+
+  padding: 30px 30px 0;
+
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.deep-analysis__article:first-child {
+  padding-left: 0;
+}
+
+.deep-analysis__article:last-child {
+  padding-right: 0;
+}
+
+.deep-analysis__article
+  + .deep-analysis__article {
+  border-left: 1px solid var(--color-border);
+}
+
+.deep-analysis__article-title {
+  margin: 0;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: 23px;
+  font-weight: 500;
+
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+
+  transition: color 140ms ease;
+}
+
+.deep-analysis__article:hover
+  .deep-analysis__article-title {
+  color: var(--color-accent);
+}
+
+.deep-analysis__article-excerpt {
+  margin: 12px 0 0;
+
+  color: var(--color-text-secondary);
+
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.deep-analysis__article .deep-analysis__meta {
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 950px) {
+  .deep-analysis__lead {
+    grid-template-columns: 1fr;
+
+    gap: 28px;
+  }
+
+  .deep-analysis__lead-media {
+    min-height: 360px;
+
+    order: -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .deep-analysis {
+    margin-top: 64px;
+  }
+
+  .deep-analysis__heading {
+    font-size: 30px;
+  }
+
+  .deep-analysis__lead {
+    padding: 24px 0;
+  }
+
+  .deep-analysis__lead-media {
+    min-height: 240px;
+  }
+
+  .deep-analysis__lead-title {
+    font-size: 34px;
+  }
+
+  .deep-analysis__secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .deep-analysis__article,
+  .deep-analysis__article:first-child,
+  .deep-analysis__article:last-child {
+    padding: 24px 0;
+  }
+
+  .deep-analysis__article
+    + .deep-analysis__article {
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+}
