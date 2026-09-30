@@ -1,0 +1,86 @@
+.market-ticker {
+  width: 100%;
+
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+
+  background: var(--color-background);
+}
+
+.market-ticker__content {
+  display: flex;
+  align-items: center;
+
+  width: min(
+    calc(100% - 48px),
+    var(--page-width)
+  );
+
+  min-height: 42px;
+
+  margin: 0 auto;
+
+  overflow-x: auto;
+}
+
+.market-ticker__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  flex-shrink: 0;
+
+  padding: 0 24px;
+
+  border-right: 1px solid var(--color-border);
+
+  font-size: 12px;
+}
+
+.market-ticker__item:first-child {
+  padding-left: 0;
+}
+
+.market-ticker__symbol {
+  font-weight: 600;
+}
+
+.market-ticker__value {
+  color: var(--color-text-secondary);
+}
+
+.market-ticker__change--positive {
+  color: var(--color-positive);
+}
+
+.market-ticker__change--negative {
+  color: var(--color-negative);
+}
+
+.market-ticker__markets {
+  flex-shrink: 0;
+
+  margin-left: auto;
+  padding-left: 24px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: var(--color-text);
+
+  font-size: 12px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .market-ticker__content {
+    width: calc(100% - 32px);
+  }
+
+  .market-ticker__markets {
+    display: none;
+  }
+}
