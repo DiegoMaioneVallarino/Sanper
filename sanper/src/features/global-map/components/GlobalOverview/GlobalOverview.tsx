@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { mockEvents } from "../../data/mockEvents";
 import { WorldMap } from "../WorldMap/WorldMap";
 
+import {
+  mockStories,
+} from "../../../stories/data/mockStories";
 
 import "./GlobalOverview.css";
 
@@ -35,7 +38,7 @@ export function GlobalOverview() {
         <div className="global-overview__map">
 
           <div className="global-overview__map-background">
-  <WorldMap events={mockEvents} />
+ <WorldMap stories={mockStories} />
 </div>
 
           <div className="global-overview__legend">

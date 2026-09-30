@@ -17,8 +17,12 @@ export interface Article {
   id: string;
   slug: string;
 
+  storyId?: string;
+
   title: string;
   excerpt: string;
+
+  // temporalmente conservamos category
 
   category: ArticleCategory;
 

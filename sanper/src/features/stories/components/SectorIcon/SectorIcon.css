@@ -1,0 +1,29 @@
+.sector-icon {
+  display: inline-flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: center;
+
+  color: currentColor;
+}
+
+.sector-icon svg {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  fill: none;
+
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sector-icon--energy svg {
+  fill: currentColor;
+  stroke: none;
+}
