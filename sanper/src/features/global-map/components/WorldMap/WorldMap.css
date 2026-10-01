@@ -1,3 +1,7 @@
+/* =========================================================
+   WORLD MAP
+   ========================================================= */
+
 .world-map {
   width: 100%;
   height: 100%;
@@ -7,7 +11,7 @@
 
   overflow: hidden;
 
-  background: #f7f9fb;
+  background: #061611;
 }
 
 
@@ -30,7 +34,9 @@
   overflow-x: auto;
 
   border-bottom: 1px solid
-    rgba(50, 70, 58, 0.08);
+    rgba(100, 140, 115, 0.16);
+
+  background: #091b15;
 
   scrollbar-width: none;
 }
@@ -53,7 +59,7 @@
 
   background: transparent;
 
-  color: #68756d;
+  color: #82998a;
 
   font: inherit;
   font-size: 10px;
@@ -62,22 +68,22 @@
   cursor: pointer;
 
   transition:
-    color 120ms ease,
-    background 120ms ease;
+    color 140ms ease,
+    background 140ms ease;
 }
 
 .world-map__filter:hover {
-  color: #263b2d;
+  color: #d3e3d8;
 
   background:
-    rgba(75, 105, 85, 0.06);
+    rgba(66, 117, 84, 0.12);
 }
 
 .world-map__filter--active {
-  color: #24462f;
+  color: #b9d7c3;
 
   background:
-    rgba(75, 105, 85, 0.1);
+    rgba(47, 110, 72, 0.18);
 }
 
 .world-map__filter .sector-icon {
@@ -85,7 +91,7 @@
 }
 
 .world-map__filter-count {
-  color: #98a29c;
+  color: #71867a;
 
   font-size: 9px;
 
@@ -100,7 +106,7 @@
 
 
 /* =========================================================
-   MAP VIEWPORT
+   MAP CANVAS
    ========================================================= */
 
 .world-map__canvas {
@@ -116,6 +122,14 @@
   justify-content: center;
 
   overflow: hidden;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 40%,
+      rgba(28, 86, 61, 0.25),
+      transparent 65%
+    ),
+    #061611;
 }
 
 .world-map__viewport {
@@ -127,6 +141,41 @@
 
 
 /* =========================================================
+   MACRO GRID
+   10 columns × 6 rows = 60 sectors
+   ========================================================= */
+
+.world-map__canvas::before {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  z-index: 2;
+
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(
+      to right,
+      rgba(190, 218, 185, 0.10) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(190, 218, 185, 0.10) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    10% 100%,
+    100% 16.6667%;
+
+  opacity: 0.38;
+}
+
+
+/* =========================================================
    INTERACTIVE SVG
    ========================================================= */
 
@@ -134,16 +183,17 @@
   position: absolute;
   inset: 0;
 
+  z-index: 1;
+
   width: 100%;
   height: 100%;
-
-  z-index: 1;
 }
 
 .world-map__svg {
   width: 100%;
   height: 100%;
-      background: #f3f8f4;
+
+  background: transparent;
 }
 
 .world-map__svg svg {
@@ -155,99 +205,101 @@
 
 
 /* =========================================================
-   COUNTRIES — NORMAL STATE
+   COUNTRIES
    ========================================================= */
 
 .world-map__svg .land {
-  fill: #c7d5cb !important;
+  display: inline !important;
+  visibility: visible !important;
+
+  fill: #12382b !important;
   fill-opacity: 1 !important;
 
-  stroke: #6f8d78 !important;
-  stroke-opacity: 0.75 !important;
+  stroke: #52705b !important;
+  stroke-width: 0.65px;
+  stroke-opacity: 0.55 !important;
 
-  opacity: 1;
+  opacity: 1 !important;
 
   cursor: pointer;
 
   transition:
-    fill 180ms ease,
-    stroke 180ms ease,
-    opacity 180ms ease,
-    filter 180ms ease;
+    fill 200ms ease,
+    stroke 200ms ease,
+    opacity 200ms ease,
+    filter 200ms ease;
 }
 
 .world-map__svg .land:hover {
-  fill: #8eaa96 !important;
+  fill: #245e45 !important;
+
+  stroke: #d4bd78 !important;
+  stroke-opacity: 0.95 !important;
 
   filter:
     drop-shadow(
-      0 0 3px
-      rgba(55, 90, 65, 0.22)
+      0 0 4px
+      rgba(216, 183, 105, 0.32)
     );
 }
 
 
 /* =========================================================
-   COUNTRIES — TERRITORY SELECTED
+   COUNTRY SELECTED MODE
    ========================================================= */
 
 /*
- * Cuando seleccionamos un país,
- * todos los países pasan a segundo plano.
+ * Cuando existe un país seleccionado,
+ * el resto del mundo pasa a segundo plano.
  */
 
 .world-map__interactive--country-selected
 .world-map__svg
 .land {
-  fill: #e0e8e2 !important;
+  fill: #10271e !important;
 
-  stroke: #819489 !important;
+  stroke: #426451 !important;
+  stroke-opacity: 0.4 !important;
 
-  stroke-opacity: 0.7 !important;
-
-  opacity: 0.78;
+  opacity: 0.75 !important;
 
   filter: none;
 }
 
 
 /*
- * Los países secundarios pueden seguir
- * reaccionando ligeramente al hover,
- * pero sin competir con el seleccionado.
+ * Hover de países secundarios.
  */
 
 .world-map__interactive--country-selected
 .world-map__svg
 .land:hover {
-  fill: #dce5df !important;
+  fill: #1b4935 !important;
 
-  opacity: 0.65;
+  stroke: #6e8b78 !important;
 
-  filter: none;
+  opacity: 0.85 !important;
 }
 
 
 /*
- * El país seleccionado mantiene
- * toda su presencia visual.
+ * País seleccionado.
  */
 
 .world-map__interactive--country-selected
 .world-map__svg
 .world-map__land--selected {
-  fill: #a9c0af !important;
+  fill: #326f4e !important;
 
-  stroke: #587361 !important;
+  stroke: #e1c780 !important;
+  stroke-opacity: 1 !important;
 
-  stroke-opacity: 0.9 !important;
-
-  opacity: 1;
+  opacity: 1 !important;
 
   filter:
     drop-shadow(
-      0 1px 3px
-      rgba(45, 75, 55, 0.12)
+      0 0 5px
+      rgba(224, 192, 113, 0.4)
     );
 }
 
@@ -259,15 +311,11 @@
 .world-map__interactive--country-selected
 .world-map__svg
 .world-map__land--selected:hover {
-  fill: #8eaa96 !important;
+  fill: #3b805a !important;
 
-  opacity: 1;
+  stroke: #f0d68d !important;
 
-  filter:
-    drop-shadow(
-      0 1px 4px
-      rgba(45, 75, 55, 0.18)
-    );
+  opacity: 1 !important;
 }
 
 
@@ -283,14 +331,14 @@
   padding: 5px 8px;
 
   border: 1px solid
-    rgba(75, 100, 82, 0.16);
+    rgba(113, 153, 126, 0.28);
 
   border-radius: 5px;
 
   background:
-    rgba(255, 255, 255, 0.96);
+    rgba(9, 29, 21, 0.96);
 
-  color: #24352a;
+  color: #e7eee8;
 
   font-size: 10px;
   font-weight: 650;
@@ -300,8 +348,8 @@
   white-space: nowrap;
 
   box-shadow:
-    0 3px 12px
-    rgba(20, 40, 25, 0.08);
+    0 4px 16px
+    rgba(0, 0, 0, 0.28);
 
   transform:
     translate(10px, 10px);
@@ -324,14 +372,15 @@
   height: 100%;
 
   /*
-   * La capa no bloquea el SVG.
+   * La capa completa no bloquea
+   * la interacción con los países.
    */
   pointer-events: none;
 }
 
 
 /* =========================================================
-   MARKERS
+   STORY MARKERS
    ========================================================= */
 
 .world-map__marker {
@@ -353,10 +402,6 @@
 
   cursor: pointer;
 
-  /*
-   * Los markers sí reciben eventos,
-   * aunque su capa padre no.
-   */
   pointer-events: auto;
 }
 
@@ -369,15 +414,19 @@
   width: 7px;
   height: 7px;
 
-  border: 2px solid white;
+  border: 2px solid
+    rgba(238, 247, 240, 0.95);
+
   border-radius: 50%;
 
   transform:
     translate(-50%, -50%);
 
   box-shadow:
-    0 1px 4px
-    rgba(0, 0, 0, 0.25);
+    0 0 4px
+    rgba(255, 255, 255, 0.18),
+    0 2px 5px
+    rgba(0, 0, 0, 0.45);
 }
 
 .world-map__marker-ring {
@@ -401,7 +450,7 @@
 
   animation:
     world-map-pulse
-    2.2s
+    3.2s
     ease-out
     infinite;
 }
@@ -411,7 +460,7 @@
     width: 8px;
     height: 8px;
 
-    opacity: 0.8;
+    opacity: 0.75;
   }
 
   70% {
@@ -435,30 +484,30 @@
    ========================================================= */
 
 .world-map__marker--high {
-  color: #e5484d;
+  color: #ff625d;
 }
 
 .world-map__marker--high
 .world-map__marker-core {
-  background: #e5484d;
+  background: #ff625d;
 }
 
 .world-map__marker--medium {
-  color: #f59e0b;
+  color: #f3b85b;
 }
 
 .world-map__marker--medium
 .world-map__marker-core {
-  background: #f59e0b;
+  background: #f3b85b;
 }
 
 .world-map__marker--monitoring {
-  color: #7c8798;
+  color: #62a5d7;
 }
 
 .world-map__marker--monitoring
 .world-map__marker-core {
-  background: #7c8798;
+  background: #62a5d7;
 }
 
 
@@ -484,21 +533,20 @@
   padding: 10px 12px;
 
   border: 1px solid
-    var(--color-border);
+    rgba(113, 153, 126, 0.28);
 
   border-radius: 6px;
 
   background:
-    rgba(255, 255, 255, 0.98);
+    rgba(9, 29, 21, 0.98);
 
-  color:
-    var(--color-text);
+  color: #e7eee8;
 
   text-align: left;
 
   box-shadow:
-    0 6px 20px
-    rgba(11, 20, 36, 0.09);
+    0 8px 24px
+    rgba(0, 0, 0, 0.3);
 
   transform:
     translateX(-50%)
@@ -527,8 +575,7 @@
 }
 
 .world-map__tooltip-region {
-  color:
-    var(--color-accent);
+  color: #d9bd76;
 
   font-size: 9px;
   font-weight: 700;
@@ -544,10 +591,12 @@
 
   gap: 5px;
 
-  color: #587261;
+  color: #8fb39d;
 }
 
 .world-map__tooltip strong {
+  color: #eef4ef;
+
   font-family:
     Georgia,
     "Times New Roman",
@@ -560,8 +609,7 @@
 }
 
 .world-map__tooltip-location {
-  color:
-    var(--color-text-muted);
+  color: #9eb2a5;
 
   font-size: 10px;
 
@@ -584,14 +632,14 @@
   padding: 6px 9px;
 
   border: 1px solid
-    rgba(65, 85, 72, 0.14);
+    rgba(128, 159, 137, 0.32);
 
   border-radius: 5px;
 
   background:
-    rgba(255, 255, 255, 0.94);
+    rgba(11, 36, 26, 0.94);
 
-  color: #34483a;
+  color: #e2d2a2;
 
   font: inherit;
   font-size: 10px;
@@ -600,12 +648,19 @@
   cursor: pointer;
 
   box-shadow:
-    0 2px 8px
-    rgba(30, 50, 35, 0.05);
+    0 3px 12px
+    rgba(0, 0, 0, 0.2);
+
+  transition:
+    background 140ms ease,
+    border-color 140ms ease;
 }
 
 .world-map__back:hover {
-  background: white;
+  background: #173b2b;
+
+  border-color:
+    rgba(220, 190, 115, 0.45);
 }
 
 
@@ -624,7 +679,7 @@
   transform:
     translateX(-50%);
 
-  color: #304238;
+  color: #e2d2a2;
 
   font-size: 11px;
   font-weight: 700;

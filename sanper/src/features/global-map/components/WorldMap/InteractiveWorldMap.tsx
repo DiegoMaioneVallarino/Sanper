@@ -4,6 +4,10 @@ import {
   useState,
 } from "react";
 
+import { MAP_REGIONS } from
+  "../../config/mapRegions";
+
+
 interface HoveredCountry {
   code: string;
   name: string;
@@ -53,6 +57,110 @@ const IGNORED_CLASSES = new Set([
   "aq",
 ]);
 
+
+const SVG_NS =
+  "http://www.w3.org/2000/svg";
+
+function sanitizeSvgSource(
+  svgText: string,
+) {
+  /*
+   * Algunos SVG exportados contienen accidentalmente
+   * más de un atributo id en la misma etiqueta.
+   *
+   * XML no permite:
+   *
+   * <path id="foo" ... id="bar" />
+   *
+   * Conservamos el primer id y eliminamos los siguientes
+   * antes de pasar el documento a DOMParser.
+   */
+  return svgText.replace(
+    /<([a-zA-Z][^<>]*?)>/g,
+    (tag) => {
+      let foundId = false;
+
+      return tag.replace(
+        /\s+id\s*=\s*(["'])[^"']*\1/gi,
+        (idAttribute) => {
+          if (!foundId) {
+            foundId = true;
+            return idAttribute;
+          }
+
+          return "";
+        },
+      );
+    },
+  );
+}
+
+
+function addMapEffects(svgText: string) {
+  const parser = new DOMParser();
+
+  const document =
+    parser.parseFromString(
+      svgText,
+      "image/svg+xml",
+    );
+
+  const parserError =
+    document.querySelector("parsererror");
+
+  if (parserError) {
+    console.error(
+      "WORLD SVG PARSE ERROR:",
+      parserError.textContent,
+    );
+
+    return svgText;
+  }
+
+  const svg =
+    document.documentElement;
+
+  svg.setAttribute(
+    "preserveAspectRatio",
+    "none",
+  );
+
+  /*
+   * Añadimos la región directamente
+   * como metadata/clase a cada país ORIGINAL.
+   *
+   * No clonamos geometría.
+   */
+  for (const [region, codes] of
+    Object.entries(MAP_REGIONS)) {
+    const codeSet =
+      new Set<string>(codes);
+
+    svg
+      .querySelectorAll(".land")
+      .forEach((country) => {
+        const classes =
+          Array.from(country.classList);
+
+        const belongsToRegion =
+          classes.some((className) =>
+            codeSet.has(className),
+          );
+
+        if (!belongsToRegion) {
+          return;
+        }
+
+        country.classList.add(
+          `map-region-${region}`,
+        );
+      });
+  }
+
+  return new XMLSerializer()
+    .serializeToString(svg);
+}
+
 export function InteractiveWorldMap({
   onViewBoxChange,
 }: InteractiveWorldMapProps) {
@@ -84,13 +192,9 @@ export function InteractiveWorldMap({
         return response.text();
       })
       .then((svg) => {
-  const modifiedSvg =
-    svg.replace(
-      "<svg",
-      '<svg preserveAspectRatio="none"',
-    );
-
-  setSvgContent(modifiedSvg);
+  setSvgContent(
+  addMapEffects(svg),
+);
 })
       .catch((error) => {
         console.error(error);

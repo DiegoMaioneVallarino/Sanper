@@ -3,7 +3,7 @@ import {
   NavLink,
 } from "react-router-dom";
 
-import { ProfileMenu } from "../ProfileMenu/ProfileMenu";
+import { ProfileMenu } from "../../ProfileMenu/ProfileMenu";
 
 import "./Header.css";
 

@@ -1,0 +1,50 @@
+export const MAP_REGIONS = {
+  northAmerica: [
+    "ca", "us", "mx", "gl", "gt", "bz", "sv",
+    "hn", "ni", "cr", "pa", "cu", "ht",
+    "do", "jm", "bs", "tt",
+  ],
+  southAmerica: [
+    "co", "ve", "gy", "sr", "ec", "pe",
+    "bo", "br", "py", "uy", "ar", "cl",
+    "fk", "gf",
+  ],
+  europe: [
+    "is", "ie", "gb", "pt", "es", "fr",
+    "be", "nl", "lu", "de", "ch", "at",
+    "it", "mt", "dk", "no", "se", "fi",
+    "ee", "lv", "lt", "pl", "cz", "sk",
+    "hu", "si", "hr", "ba", "rs", "me",
+    "al", "mk", "gr", "bg", "ro", "md",
+    "ua", "by", "ru", "cy", "tr", "xk",
+  ],
+  middleEast: [
+    "tr", "cy", "sy", "lb", "il", "ps",
+    "jo", "iq", "ir", "kw", "sa", "bh",
+    "qa", "ae", "om", "ye",
+  ],
+  africa: [
+    "ma", "dz", "tn", "ly", "eg", "mr",
+    "ml", "ne", "td", "sd", "ss", "er",
+    "dj", "et", "so", "sn", "gm", "gw",
+    "gn", "sl", "lr", "ci", "gh", "tg",
+    "bj", "bf", "ng", "cm", "cf", "gq",
+    "ga", "cg", "cd", "ug", "ke", "rw",
+    "bi", "tz", "ao", "zm", "mw", "mz",
+    "zw", "na", "bw", "za", "ls", "sz",
+    "mg", "mu", "sc", "cv", "km",
+  ],
+  asia: [
+    "ru", "ge", "am", "az", "kz", "uz",
+    "tm", "kg", "tj", "af", "pk", "in",
+    "np", "bt", "bd", "lk", "mv", "cn",
+    "mn", "kp", "kr", "jp", "tw", "mm",
+    "th", "la", "kh", "vn", "my", "sg",
+    "id", "bn", "ph", "tl",
+  ],
+  oceania: [
+    "au", "nz", "pg", "fj", "sb", "vu",
+    "nc", "ws", "to", "ki", "fm", "pw",
+    "mh", "nr", "tv",
+  ],
+} as const;
