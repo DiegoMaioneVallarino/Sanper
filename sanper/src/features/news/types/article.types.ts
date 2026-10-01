@@ -1,23 +1,23 @@
-export interface ArticleAuthor {
-  id: string;
-  name: string;
-  avatar?: string;
-  role?: string;
-}
-
 export type ArticleCategory =
-  | "Geopolítica"
-  | "Economía"
-  | "Mercados"
-  | "Tecnología"
-  | "Energía"
-  | "Global"
-  | "Análisis";
+  | "geopolitics"
+  | "economy"
+  | "markets"
+  | "technology"
+  | "energy"
+  | "science"
+  | "business";
 
 export type ArticleType =
   | "news"
   | "analysis"
   | "explainer";
+
+export interface ArticleAuthor {
+  id: string;
+  name: string;
+  role?: string;
+  avatar?: string;
+}
 
 export interface ArticleSection {
   id: string;
@@ -30,13 +30,11 @@ export interface Article {
   slug: string;
 
   /*
-   * Relación con el acontecimiento real.
+   * Conecta el artículo con el acontecimiento
+   * real representado por Story.
    */
   storyId?: string;
 
-  /*
-   * Naturaleza editorial del artículo.
-   */
   type: ArticleType;
 
   title: string;
@@ -44,8 +42,8 @@ export interface Article {
   excerpt: string;
 
   /*
-   * Temporalmente conservamos category
-   * para las cards actuales.
+   * Lo mantenemos temporalmente porque
+   * las cards actuales todavía pueden usarlo.
    */
   category: ArticleCategory;
 

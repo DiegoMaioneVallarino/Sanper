@@ -1,8 +1,7 @@
 import { useParams } from "react-router-dom";
 
-import { mockArticles } from
-  "../../features/news/data/mockArticles";
-  
+import { mockArticles } from "../data/mockArticles";
+
 import "./ArticlePage.css";
 
 function formatArticleDate(
