@@ -1,4 +1,9 @@
-import { Link, NavLink } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+} from "react-router-dom";
+
+import { ProfileMenu } from "../ProfileMenu/ProfileMenu";
 
 import "./Header.css";
 
@@ -79,16 +84,9 @@ export function Header() {
             <SearchIcon />
           </button>
 
-          <Link
-            className="header__profile"
-            to="/perfil"
-            aria-label="Perfil"
-          >
-            <UserIcon />
-          </Link>
+          <ProfileMenu />
 
         </div>
-
       </div>
     </header>
   );
@@ -107,23 +105,6 @@ function SearchIcon() {
       />
 
       <path d="m16 16 4 4" />
-    </svg>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <circle
-        cx="12"
-        cy="8"
-        r="3.5"
-      />
-
-      <path d="M5 20c.7-4 3.1-6 7-6s6.3 2 7 6" />
     </svg>
   );
 }
