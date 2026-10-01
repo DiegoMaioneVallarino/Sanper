@@ -2,7 +2,11 @@ import { useParams } from "react-router-dom";
 
 import { mockArticles } from
   "../../features/news/data/mockArticles";
-  
+  import { mockStories } from
+  "../../features/stories/data/mockStories";
+
+import { SectorBadge } from
+  "../../features/stories/components/SectorBadge/SectorBadge";
 import "./ArticlePage.css";
 
 function formatArticleDate(
@@ -18,6 +22,42 @@ function formatArticleDate(
   ).format(new Date(date));
 }
 
+function formatImportance(
+  importance:
+    | "local"
+    | "national"
+    | "regional"
+    | "international"
+    | "global",
+) {
+  const labels = {
+    local: "Local",
+    national: "Nacional",
+    regional: "Regional",
+    international:
+      "Internacional",
+    global: "Global",
+  };
+
+  return labels[importance];
+}
+
+function formatRelevance(
+  relevance:
+    | "high"
+    | "medium"
+    | "monitoring",
+) {
+  const labels = {
+    high: "Alta",
+    medium: "Media",
+    monitoring:
+      "Seguimiento",
+  };
+
+  return labels[relevance];
+}
+
 export function ArticlePage() {
   const { slug } = useParams<{
     slug: string;
@@ -28,6 +68,19 @@ export function ArticlePage() {
       (item) =>
         item.slug === slug,
     );
+
+
+const story =
+  article?.storyId
+    ? mockStories.find(
+        (item) =>
+          item.id ===
+          article.storyId,
+      )
+    : undefined;
+
+
+
 
   if (!article) {
     return (
@@ -202,53 +255,121 @@ export function ArticlePage() {
           </div>
 
           <aside className="article__sidebar">
-            <div className="article__context">
-              <span className="article__context-label">
-                SOBRE ESTE ARTÍCULO
-              </span>
+  {story ? (
+    <div className="article__context">
+      <span className="article__context-label">
+        CONTEXTO
+      </span>
 
-              <div className="article__context-item">
-                <span>Categoría</span>
+      <div className="article__context-section">
+        <span className="article__context-heading">
+          Sectores
+        </span>
 
-                <strong>
-                  {article.category}
-                </strong>
+        <div className="article__sectors">
+          {story.sectors.map(
+            (sector) => (
+              <SectorBadge
+                key={sector}
+                sector={sector}
+              />
+            ),
+          )}
+        </div>
+      </div>
+
+      <div className="article__context-section">
+        <span className="article__context-heading">
+          Territorios
+        </span>
+
+        <div className="article__territories">
+          {story.territories.map(
+            (territory) => (
+              <div
+                key={territory.code}
+                className="article__territory"
+              >
+                <span className="article__territory-code">
+                  {territory.code}
+                </span>
+
+                <span>
+                  {territory.name}
+                </span>
               </div>
+            ),
+          )}
+        </div>
+      </div>
 
-              <div className="article__context-item">
-                <span>Tipo</span>
+      <div className="article__context-section">
+        <div className="article__context-row">
+          <span>Importancia</span>
 
-                <strong>
-                  {article.type ===
-                  "analysis"
-                    ? "Análisis"
-                    : article.type ===
-                        "explainer"
-                      ? "Explicador"
-                      : "Noticias"}
-                </strong>
-              </div>
+          <strong>
+            {formatImportance(
+              story.importance,
+            )}
+          </strong>
+        </div>
 
-              <div className="article__context-item">
-                <span>Lectura</span>
+        <div className="article__context-row">
+          <span>Relevancia</span>
 
-                <strong>
-                  {article.readingTime} min
-                </strong>
-              </div>
+          <strong>
+            {formatRelevance(
+              story.relevance,
+            )}
+          </strong>
+        </div>
+      </div>
 
-              {article.storyId && (
-                <div className="article__story-indicator">
-                  <span
-                    className="article__story-dot"
-                    aria-hidden="true"
-                  />
+      {story.location && (
+        <div className="article__context-section">
+          <span className="article__context-heading">
+            Ubicación
+          </span>
 
-                  Historia en seguimiento
-                </div>
-              )}
-            </div>
-          </aside>
+          <strong className="article__location">
+            {story.location.name}
+          </strong>
+        </div>
+      )}
+
+      <div className="article__story-status">
+        <span
+          className="article__story-dot"
+          aria-hidden="true"
+        />
+
+        Historia en seguimiento
+      </div>
+    </div>
+  ) : (
+    <div className="article__context">
+      <span className="article__context-label">
+        SOBRE ESTE ARTÍCULO
+      </span>
+
+      <div className="article__context-row">
+        <span>Categoría</span>
+
+        <strong>
+          {article.category}
+        </strong>
+      </div>
+
+      <div className="article__context-row">
+        <span>Lectura</span>
+
+        <strong>
+          {article.readingTime} min
+        </strong>
+      </div>
+    </div>
+  )}
+</aside>
         </div>
       </article>
     </main>

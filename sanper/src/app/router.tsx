@@ -6,6 +6,8 @@ import {
 import { MainLayout } from "../layouts/MainLayout/MainLayout";
 import { HomePage } from "../pages/HomePage/HomePage";
 import { ArticlePage } from "../pages/ArticlePage/ArticlePage";
+import { MarketsPage } from
+  "../pages/MarketsPage/MarketsPage";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,10 @@ const router = createBrowserRouter([
         path: "/noticia/:slug",
         element: <ArticlePage />,
       },
+      {
+  path: "/mercados",
+  element: <MarketsPage />,
+},
     ],
   },
 ]);

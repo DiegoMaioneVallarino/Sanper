@@ -23,7 +23,7 @@ export const mockArticles: Article[] = [
 
     category: "Energía",
 
-    image: "/images/hormuz.jpg",
+    image: "/images/hormuz.jfif",
 
     imageCaption:
       "El Estrecho de Ormuz concentra una parte estratégica del tránsito energético internacional.",
