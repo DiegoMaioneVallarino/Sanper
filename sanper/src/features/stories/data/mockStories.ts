@@ -17,7 +17,33 @@ export const mockStories: Story[] = [
       "geopolitics",
       "markets",
     ],
+countries: [
+  {
+    countryCode: "IR",
+    role: "involved",
+  },
+  {
+    countryCode: "US",
+    role: "involved",
+  },
+  {
+    countryCode: "OM",
+    role: "involved",
+  },
 
+  {
+    countryCode: "IN",
+    role: "affected",
+  },
+  {
+    countryCode: "CN",
+    role: "affected",
+  },
+  {
+    countryCode: "JP",
+    role: "affected",
+  },
+],
     territories: [
       {
         code: "IR",
@@ -56,7 +82,29 @@ export const mockStories: Story[] = [
 
     summary:
       "El sector tecnológico taiwanés concentra nueva actividad industrial y estratégica.",
+countries: [
+  {
+    countryCode: "TW",
+    role: "involved",
+  },
+  {
+    countryCode: "CN",
+    role: "involved",
+  },
 
+  {
+    countryCode: "JP",
+    role: "affected",
+  },
+  {
+    countryCode: "KR",
+    role: "affected",
+  },
+  {
+    countryCode: "US",
+    role: "affected",
+  },
+],
     sectors: [
       "technology",
       "business",
@@ -99,7 +147,33 @@ export const mockStories: Story[] = [
       "economy",
       "geopolitics",
     ],
+countries: [
+  {
+    countryCode: "BE",
+    role: "involved",
+  },
+  {
+    countryCode: "DE",
+    role: "involved",
+  },
+  {
+    countryCode: "FR",
+    role: "involved",
+  },
 
+  {
+    countryCode: "ES",
+    role: "affected",
+  },
+  {
+    countryCode: "IT",
+    role: "affected",
+  },
+  {
+    countryCode: "PL",
+    role: "affected",
+  },
+],
     territories: [
       {
         code: "BE",

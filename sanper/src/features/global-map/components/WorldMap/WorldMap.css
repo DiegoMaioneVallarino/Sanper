@@ -203,47 +203,88 @@
   height: 100%;
 }
 
-
 /* =========================================================
-   COUNTRIES
+   COUNTRIES — STORY STATE
    ========================================================= */
 
+/*
+ * DEFAULT:
+ * país no involucrado ni afectado.
+ */
+
 .world-map__svg .land {
-  display: inline !important;
-  visibility: visible !important;
+      display: inline !important;
+    visibility: visible !important;
+    fill: #0d271e !important;
+    fill-opacity: 1 !important;
+    stroke: #486154 !important;
+    stroke-width: 1.35px;
+    stroke-opacity: 0.4 !important;
+    opacity: 0.82 !important;
+    cursor: pointer;
+    transition: fill 300ms ease, stroke 300ms ease, stroke-opacity 300ms ease, opacity 300ms ease, filter 300ms ease;
+}
 
-  fill: #12382b !important;
-  fill-opacity: 1 !important;
 
-  stroke: #52705b !important;
+/*
+ * INVOLVED:
+ * participación directa en la Story.
+ */
+
+.world-map__svg
+.land.world-map__land--involved {
+  fill: #255d43 !important;
+
+  stroke: #dfc476 !important;
   stroke-width: 0.65px;
-  stroke-opacity: 0.55 !important;
+  stroke-opacity: 0.9 !important;
 
   opacity: 1 !important;
 
-  cursor: pointer;
-
-  transition:
-    fill 200ms ease,
-    stroke 200ms ease,
-    opacity 200ms ease,
-    filter 200ms ease;
-}
-
-.world-map__svg .land:hover {
-  fill: #245e45 !important;
-
-  stroke: #d4bd78 !important;
-  stroke-opacity: 0.95 !important;
-
   filter:
     drop-shadow(
-      0 0 4px
-      rgba(216, 183, 105, 0.32)
+      0 0 3px
+      rgba(223, 196, 118, 0.16)
     );
 }
 
 
+/*
+ * AFFECTED:
+ * afectado directamente por la Story.
+ */
+
+.world-map__svg
+.land.world-map__land--affected {
+  fill: #17483a !important;
+
+  stroke: #70a88b !important;
+  stroke-width: 0.5px;
+  stroke-opacity: 0.78 !important;
+
+  opacity: 1 !important;
+}
+
+
+/* =========================================================
+   COUNTRY HOVER
+   ========================================================= */
+
+.world-map__svg
+.land:hover {
+  fill: #286348 !important;
+
+  stroke: #d8c27f !important;
+  stroke-opacity: 0.95 !important;
+
+  opacity: 1 !important;
+
+  filter:
+    drop-shadow(
+      0 0 4px
+      rgba(216, 194, 127, 0.25)
+    );
+}
 /* =========================================================
    COUNTRY SELECTED MODE
    ========================================================= */
@@ -285,22 +326,15 @@
 /*
  * País seleccionado.
  */
-
 .world-map__interactive--country-selected
-.world-map__svg
-.world-map__land--selected {
-  fill: #326f4e !important;
-
-  stroke: #e1c780 !important;
-  stroke-opacity: 1 !important;
-
-  opacity: 1 !important;
-
-  filter:
-    drop-shadow(
-      0 0 5px
-      rgba(224, 192, 113, 0.4)
-    );
+ .world-map__svg 
+ .world-map__land--selected {
+    fill: #396e39 !important;
+    stroke: #e1c780 !important;
+    stroke-opacity: 1 !important;
+    opacity: 1 !important;
+    filter: drop-shadow(0 0 7px rgba(224, 192, 113, 0.4)) drop-shadow(0 0 24px black);
+    stroke-width: 2.35px;
 }
 
 

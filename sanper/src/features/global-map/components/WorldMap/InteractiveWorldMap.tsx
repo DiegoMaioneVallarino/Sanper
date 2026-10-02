@@ -8,6 +8,10 @@ import { MAP_REGIONS } from
   "../../config/mapRegions";
 
 
+import type {
+  Story,
+} from "../../../stories/types/story.types";
+
 interface HoveredCountry {
   code: string;
   name: string;
@@ -27,6 +31,8 @@ export interface ViewBox {
   height: number;
 }
 interface InteractiveWorldMapProps {
+  story?: Story;
+
   onViewBoxChange?: (
     viewBox: ViewBox,
   ) => void;
@@ -58,42 +64,6 @@ const IGNORED_CLASSES = new Set([
 ]);
 
 
-const SVG_NS =
-  "http://www.w3.org/2000/svg";
-
-function sanitizeSvgSource(
-  svgText: string,
-) {
-  /*
-   * Algunos SVG exportados contienen accidentalmente
-   * más de un atributo id en la misma etiqueta.
-   *
-   * XML no permite:
-   *
-   * <path id="foo" ... id="bar" />
-   *
-   * Conservamos el primer id y eliminamos los siguientes
-   * antes de pasar el documento a DOMParser.
-   */
-  return svgText.replace(
-    /<([a-zA-Z][^<>]*?)>/g,
-    (tag) => {
-      let foundId = false;
-
-      return tag.replace(
-        /\s+id\s*=\s*(["'])[^"']*\1/gi,
-        (idAttribute) => {
-          if (!foundId) {
-            foundId = true;
-            return idAttribute;
-          }
-
-          return "";
-        },
-      );
-    },
-  );
-}
 
 
 function addMapEffects(svgText: string) {
@@ -162,6 +132,7 @@ function addMapEffects(svgText: string) {
 }
 
 export function InteractiveWorldMap({
+  story,
   onViewBoxChange,
 }: InteractiveWorldMapProps) {
   const containerRef =
@@ -180,26 +151,139 @@ export function InteractiveWorldMap({
     null,
     );
 
-  useEffect(() => {
-    fetch("/maps/world.svg")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(
-            "No se pudo cargar world.svg",
-          );
-        }
+useEffect(() => {
+  fetch("/maps/world.svg")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(
+          "No se pudo cargar world.svg",
+        );
+      }
 
-        return response.text();
-      })
-      .then((svg) => {
-  setSvgContent(
-  addMapEffects(svg),
-);
-})
-      .catch((error) => {
-        console.error(error);
+      return response.text();
+    })
+    .then((svg) => {
+      /*
+       * No parseamos el SVG.
+       *
+       * world.svg funciona correctamente
+       * inyectado directamente en el DOM.
+       */
+      const preparedSvg =
+        svg.includes(
+          "preserveAspectRatio=",
+        )
+          ? svg.replace(
+              /preserveAspectRatio="[^"]*"/,
+              'preserveAspectRatio="none"',
+            )
+          : svg.replace(
+              "<svg",
+              '<svg preserveAspectRatio="none"',
+            );
+
+      setSvgContent(preparedSvg);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}, []);
+
+useEffect(() => {
+  const container =
+    containerRef.current;
+
+  if (!container || !svgContent) {
+    return;
+  }
+
+  const countries =
+    container.querySelectorAll<SVGElement>(
+      ".land",
+    );
+
+  for (const [region, codes] of
+    Object.entries(MAP_REGIONS)) {
+    const codeSet =
+      new Set<string>(codes);
+
+    countries.forEach((country) => {
+      const code =
+        Array.from(
+          country.classList,
+        ).find(
+          (className) =>
+            className.length === 2 &&
+            !IGNORED_CLASSES.has(
+              className,
+            ),
+        );
+
+      if (
+        code &&
+        codeSet.has(code)
+      ) {
+        country.classList.add(
+          `map-region-${region}`,
+        );
+      }
+    });
+  }
+}, [svgContent]);
+
+
+useEffect(() => {
+  const container =
+    containerRef.current;
+
+  if (!container || !svgContent) {
+    return;
+  }
+
+  const countries =
+    container.querySelectorAll<SVGElement>(
+      ".land",
+    );
+
+  /*
+   * Cada vez que cambia la Story:
+   *
+   * 1. eliminamos los estados anteriores;
+   * 2. todos vuelven a ser neutrales;
+   * 3. aplicamos la nueva relación.
+   */
+  countries.forEach((country) => {
+    country.classList.remove(
+      "world-map__land--involved",
+      "world-map__land--affected",
+    );
+  });
+
+  if (!story) {
+    return;
+  }
+
+  story.countries.forEach(
+    ({ countryCode, role }) => {
+      const code =
+        countryCode.toLowerCase();
+
+      const elements =
+        container.querySelectorAll<SVGElement>(
+          `.land.${code}`,
+        );
+
+      elements.forEach((element) => {
+        element.classList.add(
+          role === "involved"
+            ? "world-map__land--involved"
+            : "world-map__land--affected",
+        );
       });
-  }, []);
+    },
+  );
+}, [story, svgContent]);
+
 
   function getCountryCode(
     element: Element,
@@ -799,13 +883,13 @@ function getCountryElements(
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="world-map__interactive"
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
-      onClick={handleClick}
-    >
+   <div
+  ref={containerRef}
+  className="world-map__interactive"
+  onPointerMove={handlePointerMove}
+  onPointerLeave={handlePointerLeave}
+  onClick={handleClick}
+>
       <div
   className="world-map__svg"
   dangerouslySetInnerHTML={{

@@ -50,4 +50,16 @@ export interface Story {
 
   articleIds: string[];
   sourceIds: string[];
+
+  countries: StoryCountryRelation[];
+}
+
+
+export type StoryCountryRole =
+  | "involved"
+  | "affected";
+
+export interface StoryCountryRelation {
+  countryCode: string;
+  role: StoryCountryRole;
 }

@@ -24,7 +24,13 @@ import type {
 import "./WorldMap.css";
 
 
+import {
+  CapitalLightsLayer,
+} from "../CapitalLightsLayer/CapitalLightsLayer";
 
+import {
+  coordinatesToViewBoxPercent,
+} from "../../utils/mapCoordinates";
 
 interface WorldMapProps {
   stories: Story[];
@@ -139,21 +145,20 @@ const [
 <InteractiveWorldMap
   onViewBoxChange={setMapViewBox}
 />
+
+  <CapitalLightsLayer
+    viewBox={mapViewBox}
+  />
     <div className="world-map__events">
       {visibleStories.map((story) => {
           if (!story.location) {
             return null;
           }
 
-         const worldPosition =
-  coordinatesToPercent(
+       const position =
+  coordinatesToViewBoxPercent(
     story.location.latitude,
     story.location.longitude,
-  );
-
-const position =
-  worldPositionToViewBoxPercent(
-    worldPosition,
     mapViewBox,
   );
 const isVisible =
@@ -230,52 +235,3 @@ return (
 );
 }
 
-function coordinatesToPercent(
-  latitude: number,
-  longitude: number,
-) {
-  const x =
-    0.27765693 * longitude +
-    46.1884822;
-
-  const y =
-    -0.50286929 * latitude +
-    49.17388057;
-
-  return {
-    x,
-    y,
-  };
-}
-
-
-function worldPositionToViewBoxPercent(
-  position: {
-    x: number;
-    y: number;
-  },
-  viewBox: ViewBox,
-) {
-  const worldX =
-    (position.x / 100) *
-    2752.766;
-
-  const worldY =
-    (position.y / 100) *
-    1537.631;
-
-  const x =
-    ((worldX - viewBox.x) /
-      viewBox.width) *
-    100;
-
-  const y =
-    ((worldY - viewBox.y) /
-      viewBox.height) *
-    100;
-
-  return {
-    x,
-    y,
-  };
-}
