@@ -18,6 +18,9 @@ import { SavedPage } from
 import { CommunityPage } from
   "../pages/CommunityPage/CommunityPage";
 
+import { AdminPage } from
+  "../pages/AdminPage/AdminPage";
+
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -30,6 +33,9 @@ import { CommunityPage } from
 {
   path: "/ajustes",
   element: <SettingsPage />,
+},{
+  path: "/admin",
+  element: <AdminPage />,
 },
       {
         path: "/noticia/:slug",
