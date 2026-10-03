@@ -20,7 +20,8 @@ import { CommunityPage } from
 
 import { AdminPage } from
   "../pages/AdminPage/AdminPage";
-
+import { EconomyPage } from
+  "../pages/EconomyPage/EconomyPage";
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -36,6 +37,9 @@ import { AdminPage } from
 },{
   path: "/admin",
   element: <AdminPage />,
+},{
+  path: "/economia",
+  element: <EconomyPage />,
 },
       {
         path: "/noticia/:slug",
