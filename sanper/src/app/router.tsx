@@ -26,7 +26,8 @@ import { EconomyPage } from
 import { TechnologyPage } from
   "../pages/TechnologyPage/TechnologyPage";
 
-
+import { AnalysisPage } from
+  "../pages/AnalysisPage/AnalysisPage";
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -55,6 +56,9 @@ import { TechnologyPage } from
 },{
   path: "/comunidad",
   element: <CommunityPage />,
+},{
+  path: "/analisis",
+  element: <AnalysisPage />,
 },
       {
   path: "/mercados",
