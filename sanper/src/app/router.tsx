@@ -28,6 +28,10 @@ import { TechnologyPage } from
 
 import { AnalysisPage } from
   "../pages/AnalysisPage/AnalysisPage";
+
+import { GeopoliticsPage } from
+  "../pages/GeopoliticsPage/GeopoliticsPage";
+
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -36,7 +40,10 @@ import { AnalysisPage } from
       {
         path: "/",
         element: <HomePage />,
-      },
+      },{
+  path: "/geopolitica",
+  element: <GeopoliticsPage />,
+},
 {
   path: "/ajustes",
   element: <SettingsPage />,
