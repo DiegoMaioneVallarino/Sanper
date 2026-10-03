@@ -15,6 +15,9 @@ import { SettingsPage } from
 import { SavedPage } from
   "../pages/SavedPage/SavedPage";
 
+import { CommunityPage } from
+  "../pages/CommunityPage/CommunityPage";
+
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -31,7 +34,10 @@ import { SavedPage } from
       {
         path: "/noticia/:slug",
         element: <ArticlePage />,
-      },
+      },{
+  path: "/comunidad",
+  element: <CommunityPage />,
+},
       {
   path: "/mercados",
   element: <MarketsPage />,
