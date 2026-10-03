@@ -22,6 +22,11 @@ import { AdminPage } from
   "../pages/AdminPage/AdminPage";
 import { EconomyPage } from
   "../pages/EconomyPage/EconomyPage";
+
+import { TechnologyPage } from
+  "../pages/TechnologyPage/TechnologyPage";
+
+
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -45,6 +50,9 @@ import { EconomyPage } from
         path: "/noticia/:slug",
         element: <ArticlePage />,
       },{
+  path: "/tecnologia",
+  element: <TechnologyPage />,
+},{
   path: "/comunidad",
   element: <CommunityPage />,
 },
