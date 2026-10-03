@@ -12,7 +12,10 @@ import { MarketsPage } from
 import { SettingsPage } from
   "../pages/SettingsPage/SettingsPage";
 
-const router = createBrowserRouter([
+import { SavedPage } from
+  "../pages/SavedPage/SavedPage";
+
+  const router = createBrowserRouter([
   {
     element: <MainLayout />,
 
@@ -32,6 +35,9 @@ const router = createBrowserRouter([
       {
   path: "/mercados",
   element: <MarketsPage />,
+},{
+  path: "/guardados",
+  element: <SavedPage />,
 },
     ],
   },
