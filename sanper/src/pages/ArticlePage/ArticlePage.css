@@ -593,3 +593,25 @@
 
   background: #708d79;
 }
+
+/* =========================================================
+   ARTICLE DISCUSSION
+   ========================================================= */
+
+.article__discussion {
+  width: min(760px, calc(100% - 48px));
+
+  margin:
+    72px auto
+    0;
+}
+
+
+.article__discussion {
+  width: min(
+    760px,
+    calc(100% - 48px)
+  );
+
+  margin: 72px auto 0;
+}

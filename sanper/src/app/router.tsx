@@ -9,6 +9,9 @@ import { ArticlePage } from "../pages/ArticlePage/ArticlePage";
 import { MarketsPage } from
   "../pages/MarketsPage/MarketsPage";
 
+import { SettingsPage } from
+  "../pages/SettingsPage/SettingsPage";
+
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -18,7 +21,10 @@ const router = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-
+{
+  path: "/ajustes",
+  element: <SettingsPage />,
+},
       {
         path: "/noticia/:slug",
         element: <ArticlePage />,
