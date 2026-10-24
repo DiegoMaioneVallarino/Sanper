@@ -32,6 +32,11 @@ import { AnalysisPage } from
 import { GeopoliticsPage } from
   "../pages/GeopoliticsPage/GeopoliticsPage";
 
+
+  import { EnergyPage } from
+  "../pages/EnergyPage/EnergyPage";
+
+
   const router = createBrowserRouter([
   {
     element: <MainLayout />,
@@ -66,6 +71,10 @@ import { GeopoliticsPage } from
 },{
   path: "/analisis",
   element: <AnalysisPage />,
+},
+{
+  path: "/energia",
+  element: <EnergyPage />,
 },
       {
   path: "/mercados",
