@@ -79,7 +79,65 @@ function sectorSimilarity(
 
   return shared / classification.sectors.length;
 }
+function geographicSimilarity(
+  classification: ArticleClassification,
+  story: Story,
+): number | null {
+  const countries = classification.entities
+    .filter((entity) => entity.type === "country")
+    .map((entity) => normalizeText(entity.name));
 
+  const locations = classification.entities
+    .filter((entity) => entity.type === "location")
+    .map((entity) => normalizeText(entity.name));
+
+  const detected = [...countries, ...locations];
+
+  if (detected.length === 0) {
+    return null;
+  }
+
+  const storyGeography = new Set(
+    [
+      ...story.territories.map((territory) => territory.name),
+      story.location?.name ?? "",
+    ].map(normalizeText),
+  );
+
+  const overlap = detected.filter((entity) =>
+    storyGeography.has(entity),
+  ).length;
+
+  return overlap / detected.length;
+}
+
+function entitySimilarity(
+  classification: ArticleClassification,
+  story: Story,
+): number | null {
+  const entities = classification.entities.filter(
+    (entity) =>
+      entity.type === "company" ||
+      entity.type === "organization" ||
+      entity.type === "commodity",
+  );
+
+  if (entities.length === 0) {
+    return null;
+  }
+
+  const storyText = normalizeText(
+    `${story.title} ${story.summary}`,
+  );
+
+  const overlap = entities.filter((entity) =>
+    ` ${storyText} `.includes(
+      ` ${normalizeText(entity.name)} `,
+    ),
+  ).length;
+
+  return overlap / entities.length;
+}
 export function matchStory(
   article: NormalizedArticle,
   classification: ArticleClassification,
@@ -104,10 +162,47 @@ export function matchStory(
       story,
     );
 
+    const geoScore = geographicSimilarity(
+      classification,
+      story,
+    );
+
+    const entityScore = entitySimilarity(
+      classification,
+      story,
+    );
+
+    const weightedScores = [
+      { value: titleScore, weight: 0.35 },
+      { value: descriptionScore, weight: 0.25 },
+      { value: sectorScore, weight: 0.15 },
+    ];
+
+    if (geoScore !== null) {
+      weightedScores.push({
+        value: geoScore,
+        weight: 0.2,
+      });
+    }
+
+    if (entityScore !== null) {
+      weightedScores.push({
+        value: entityScore,
+        weight: 0.05,
+      });
+    }
+
+    const totalWeight = weightedScores.reduce(
+      (sum, item) => sum + item.weight,
+      0,
+    );
+
     const score =
-      titleScore * 0.5 +
-      descriptionScore * 0.35 +
-      sectorScore * 0.15;
+      weightedScores.reduce(
+        (sum, item) =>
+          sum + item.value * item.weight,
+        0,
+      ) / totalWeight;
 
     if (score > bestScore) {
       bestScore = score;
@@ -119,13 +214,15 @@ export function matchStory(
     return {
       storyId: null,
       confidence: bestScore,
-      reason: "No se encontró una coincidencia suficiente.",
+      reason:
+        "No se encontró una coincidencia suficiente.",
     };
   }
 
   return {
     storyId: bestStory.id,
     confidence: bestScore,
-    reason: `Coincidencia textual y temática con "${bestStory.title}".`,
+    reason:
+      `Coincidencia temática, textual y geográfica con "${bestStory.title}".`,
   };
 }

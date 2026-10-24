@@ -41,4 +41,16 @@ export const intelligenceFixtures: RawArticle[] = [
     receivedAt: "2026-09-29T18:05:00Z",
     language: "es",
   },
+  {
+  id: "raw-004",
+  sourceId: "test-source-d",
+  url: "https://example.com/test-004",
+  title:
+    "Venezuela anuncia restricciones en sus exportaciones de petróleo",
+  description:
+    "La industria petrolera venezolana enfrenta nuevas limitaciones comerciales.",
+  publishedAt: "2026-09-29T19:00:00Z",
+  receivedAt: "2026-09-29T19:05:00Z",
+  language: "es",
+},
 ];

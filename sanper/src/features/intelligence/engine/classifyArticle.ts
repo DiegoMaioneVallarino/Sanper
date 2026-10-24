@@ -11,6 +11,10 @@ import {
   normalizeText,
 } from "./normalizeArticle";
 
+
+import { extractEntities } from "./extractEntities";
+
+
 const sectorKeywords: Record<Sector, string[]> = {
   geopolitics: [
     "iran",
@@ -127,6 +131,12 @@ export function classifyArticle(
 return {
   sectors,
   keywords: [...keywords],
-  entities: [],
+  entities: extractEntities(
+    [
+      article.title,
+      article.description,
+      article.content,
+    ].join(" "),
+  ),
 };
 }

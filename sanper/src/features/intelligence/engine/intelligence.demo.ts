@@ -27,6 +27,17 @@ export function runIntelligenceDemo() {
       status: result.status,
     })),
   );
-
+console.table(
+  results.map((result) => ({
+    article: result.article.id,
+    sectors: result.classification.sectors.join(", "),
+    entities: result.classification.entities
+      .map((entity) => entity.name)
+      .join(", "),
+    story: result.match.storyId,
+    confidence: result.match.confidence.toFixed(3),
+    status: result.status,
+  })),
+);
   return results;
 }
