@@ -21,9 +21,13 @@ import {
 
 import "./AdminPage.css";
 
+import {
+  IntelligenceReview,
+} from "../../features/intelligence/components/IntelligenceReview";
 
 type AdminSection =
   | "overview"
+  | "intelligence"
   | "stories"
   | "articles"
   | "sources"
@@ -106,7 +110,10 @@ export function AdminPage() {
       id: "community",
       label: "Comunidad",
       count: mockComments.length,
-    },
+    },{
+  id: "intelligence",
+  label: "Intelligence Engine",
+},
     {
       id: "users",
       label: "Usuarios",
@@ -208,7 +215,9 @@ export function AdminPage() {
         {/* CONTENT */}
 
         <div className="admin-content">
-
+{activeSection === "intelligence" && (
+  <IntelligenceReview />
+)}
           {activeSection ===
             "overview" && (
             <Overview
