@@ -276,3 +276,66 @@
     border-bottom: 1px solid #e7eae7;
   }
 }
+
+/* STORIES VINCULADAS */
+
+.intelligence-review__stories {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e7eae7;
+  background: #fff;
+}
+
+.intelligence-review__story {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 15px 18px;
+  border-bottom: 1px solid #edf0ed;
+}
+
+.intelligence-review__story:last-child {
+  border-bottom: 0;
+}
+
+.intelligence-review__story > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.intelligence-review__story strong {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.intelligence-review__story > div:first-child > span {
+  font-size: 10px;
+  color: #8b948d;
+}
+
+.intelligence-review__story-stats {
+  display: flex;
+  gap: 16px;
+  white-space: nowrap;
+}
+
+.intelligence-review__story-stats span {
+  font-size: 11px;
+  color: #47745a;
+}
+
+@media (max-width: 600px) {
+  .intelligence-review__story {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .intelligence-review__story-stats {
+    flex-wrap: wrap;
+  }
+}
+
