@@ -36,6 +36,8 @@ import { GeopoliticsPage } from
   import { EnergyPage } from
   "../pages/EnergyPage/EnergyPage";
 
+import { GlobalPage } from "../pages/GlobalPage/GlobalPage";
+
 
   const router = createBrowserRouter([
   {
@@ -58,6 +60,9 @@ import { GeopoliticsPage } from
 },{
   path: "/economia",
   element: <EconomyPage />,
+},{
+  path: "/global",
+  element: <GlobalPage />,
 },
       {
         path: "/noticia/:slug",
