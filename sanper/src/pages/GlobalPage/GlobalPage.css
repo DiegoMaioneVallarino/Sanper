@@ -364,3 +364,15 @@
     flex-shrink: 0;
   }
 }
+
+.global-event__coverage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.global-event__coverage span {
+  font-size: 11px;
+  color: #6d8273;
+}
