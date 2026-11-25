@@ -1,68 +1,10 @@
-export interface ArticleAuthor {
-  id: string;
-  name: string;
-  avatar?: string;
-  role?: string;
-}
-
-export type ArticleCategory =
-  | "Geopolítica"
-  | "Economía"
-  | "Mercados"
-  | "Tecnología"
-  | "Energía"
-  | "Global"
-  | "Análisis";
-
-export type ArticleType =
-  | "news"
-  | "analysis"
-  | "explainer";
-
-export interface ArticleSection {
-  id: string;
-  heading?: string;
-  paragraphs: string[];
-}
-
-export interface Article {
-  id: string;
-  slug: string;
-
-  /*
-   * Relación con el acontecimiento real.
-   */
-  storyId?: string;
-
-  /*
-   * Naturaleza editorial del artículo.
-   */
-  type: ArticleType;
-
-  title: string;
-  subtitle?: string;
-  excerpt: string;
-
-  /*
-   * Temporalmente conservamos category
-   * para las cards actuales.
-   */
-  category: ArticleCategory;
-
-  image: string;
-  imageCaption?: string;
-
-  author: ArticleAuthor;
-
-  publishedAt: string;
-  updatedAt?: string;
-
-  readingTime: number;
-
-  /*
-   * Contenido completo del artículo.
-   */
-  sections: ArticleSection[];
-
-  featured?: boolean;
-}
+/*
+ * Re-export: la fuente única es src/shared/domain.
+ */
+export type {
+  Article,
+  ArticleAuthor,
+  ArticleCategory,
+  ArticleSection,
+  ArticleType,
+} from "../../../shared/domain";

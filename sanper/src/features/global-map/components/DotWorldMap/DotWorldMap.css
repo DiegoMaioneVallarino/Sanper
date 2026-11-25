@@ -1,0 +1,199 @@
+/* =========================================================
+   DOT WORLD MAP · mapa de cuadros
+   ========================================================= */
+
+.dot-map {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+
+  overflow: hidden;
+}
+
+.dot-map__canvas {
+  position: absolute;
+  inset: 0;
+
+  display: block;
+
+  cursor: crosshair;
+}
+
+.dot-map__status {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0;
+
+  color: #71867a;
+
+  font-size: 12px;
+}
+
+
+/* ── Acontecimientos ─────────────────────────────────── */
+
+.dot-map__marker {
+  --marker-color: #8fa298;
+
+  position: absolute;
+  z-index: 2;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 1px;
+
+  background: var(--marker-color);
+
+  box-shadow:
+    0 0 0 2px #061611,
+    0 0 12px 2px color-mix(in srgb, var(--marker-color) 55%, transparent);
+
+  transform: translate(-50%, -50%);
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.dot-map__marker--high {
+  --marker-color: #e5484d;
+}
+
+.dot-map__marker--medium {
+  --marker-color: #e99a18;
+}
+
+.dot-map__marker--monitoring {
+  --marker-color: #a7b5ad;
+}
+
+.dot-map__marker:hover,
+.dot-map__marker:focus-visible,
+.dot-map__marker--highlighted {
+  z-index: 4;
+
+  transform: translate(-50%, -50%) scale(1.35);
+
+  outline: none;
+}
+
+.dot-map__marker--selected {
+  z-index: 5;
+
+  box-shadow:
+    0 0 0 2px #061611,
+    0 0 0 4px #f4f1e6,
+    0 0 18px 4px color-mix(in srgb, var(--marker-color) 70%, transparent);
+
+  transform: translate(-50%, -50%) scale(1.35);
+}
+
+/* Anillo cuadrado que se expande: sólo en los recién aparecidos. */
+.dot-map__marker-ring {
+  position: absolute;
+  inset: -3px;
+
+  border: 1.5px solid var(--marker-color);
+  border-radius: 1px;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.dot-map__marker--fresh .dot-map__marker-ring {
+  animation: dot-map-pulse 1.8s ease-out infinite;
+}
+
+@keyframes dot-map-pulse {
+  0% {
+    inset: -2px;
+    opacity: 0.9;
+  }
+
+  100% {
+    inset: -14px;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot-map__marker--fresh .dot-map__marker-ring {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+
+/* ── Tooltips ────────────────────────────────────────── */
+
+.dot-map__tooltip,
+.dot-map__country {
+  position: absolute;
+  z-index: 6;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  padding: 8px 10px;
+
+  border: 1px solid rgba(120, 160, 135, 0.28);
+  border-radius: 6px;
+
+  background: rgba(9, 27, 21, 0.96);
+
+  color: #e4efe8;
+
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: left;
+
+  pointer-events: none;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.dot-map__tooltip {
+  left: 50%;
+  bottom: calc(100% + 10px);
+
+  width: max-content;
+  max-width: 240px;
+
+  transform: translateX(-50%);
+}
+
+.dot-map__tooltip small {
+  color: #82998a;
+
+  font-size: 10px;
+}
+
+.dot-map__tooltip strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.dot-map__country {
+  transform: translate(12px, 12px);
+
+  white-space: nowrap;
+}
+
+.dot-map__country span {
+  color: #82998a;
+
+  font-size: 10px;
+}

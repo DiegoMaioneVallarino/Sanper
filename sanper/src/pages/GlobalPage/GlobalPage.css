@@ -146,6 +146,7 @@
 }
 
 .global-map {
+  height: 640px;
   overflow: hidden;
   border: 1px solid #dce5df;
   border-radius: 8px;
@@ -375,4 +376,4 @@
 .global-event__coverage span {
   font-size: 11px;
   color: #6d8273;
-}
+}

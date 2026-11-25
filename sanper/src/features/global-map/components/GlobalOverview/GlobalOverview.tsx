@@ -4,12 +4,14 @@ import { mockEvents } from "../../data/mockEvents";
 import { WorldMap } from "../WorldMap/WorldMap";
 
 import {
-  mockStories,
-} from "../../../stories/data/mockStories";
+  useSanperStories,
+} from "../../../stories/hooks/useSanperStories";
 
 import "./GlobalOverview.css";
 
 export function GlobalOverview() {
+  const stories = useSanperStories();
+
   return (
     <section className="global-overview">
 
@@ -38,7 +40,7 @@ export function GlobalOverview() {
         <div className="global-overview__map">
 
           <div className="global-overview__map-background">
- <WorldMap stories={mockStories} />
+ <WorldMap stories={stories} />
 </div>
 
           <div className="global-overview__legend">

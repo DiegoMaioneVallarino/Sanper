@@ -1,194 +1,164 @@
-
-import { useState } from "react";
-
-import {
-  mockStories,
-} from "../../stories/data/mockStories";
-
-import {
-  intelligenceFixtures,
-} from "../data/intelligence.fixtures";
-
-import {
-  processArticle,
-} from "../engine/processArticle";
-
-import {
-  selectStoriesWithIntelligence,
-} from "../selectors/selectStories";
-
-import {
-  useIntelligenceStore,
-} from "../store/intelligence.store";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type {
+  ProcessingStatus,
   ReviewDecision,
-} from "../store/intelligence.store";
+  ReviewItem,
+  ReviewStats,
+} from "../../../shared/domain";
 
-import type {
-  ProcessingResult,
-} from "../types/intelligence.types";
+import { useSanperStoriesState } from "../../stories/hooks/useSanperStories";
+
+import {
+  fetchReviewItems,
+  fetchReviewStats,
+  submitDecision,
+  triggerIngestion,
+} from "../api/intelligence.api";
 
 import "./IntelligenceReview.css";
 
-function getStatusLabel(
-  status: ProcessingResult["status"],
-) {
+function getStatusLabel(status: ProcessingStatus) {
   switch (status) {
     case "matched":
       return "Coincidencia alta";
-
     case "review_required":
       return "Requiere revisión";
-
     case "new_story":
       return "Nueva historia sugerida";
   }
 }
 
-function getDecisionLabel(
-  decision: ReviewDecision,
-) {
+function getDecisionLabel(decision: ReviewDecision) {
   switch (decision) {
     case "pending":
       return "Pendiente";
-
     case "approved":
       return "Aprobada";
-
     case "rejected":
       return "Rechazada";
   }
 }
 
+const EMPTY_STATS: ReviewStats = {
+  total: 0,
+  pending: 0,
+  approved: 0,
+  rejected: 0,
+};
+
 export function IntelligenceReview() {
-  const records = useIntelligenceStore(
-    (state) => state.records,
+  const {
+    stories,
+    source: storiesSource,
+    reload: reloadStories,
+  } = useSanperStoriesState();
+
+  const [items, setItems] = useState<ReviewItem[]>([]);
+  const [stats, setStats] = useState<ReviewStats>(EMPTY_STATS);
+
+  const [filter, setFilter] = useState<"all" | ReviewDecision>("pending");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const [list, totals] = await Promise.all([
+        fetchReviewItems(filter),
+        fetchReviewStats(),
+      ]);
+
+      setItems(list.items);
+      setStats(totals);
+    } catch (cause) {
+      setItems([]);
+      setStats(EMPTY_STATS);
+      setError(
+        cause instanceof Error
+          ? `No se pudo conectar con la API: ${cause.message}`
+          : "No se pudo conectar con la API.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  const selected = items.find((item) => item.articleId === selectedId);
+
+  const storiesById = useMemo(
+    () => new Map(stories.map((story) => [story.id, story])),
+    [stories],
   );
 
-  const importResults = useIntelligenceStore(
-    (state) => state.importResults,
-  );
+  const suggestedStory = selected?.matchStoryId
+    ? storiesById.get(selected.matchStoryId)
+    : undefined;
 
-  const approve = useIntelligenceStore(
-    (state) => state.approve,
-  );
+  async function handleIngest() {
+    setBusy(true);
+    setMessage(null);
+    setError(null);
 
-  const reject = useIntelligenceStore(
-    (state) => state.reject,
-  );
+    try {
+      const summary = await triggerIngestion();
 
-  const reopen = useIntelligenceStore(
-    (state) => state.reopen,
-  );
+      setMessage(
+        `Ingesta ${summary.runId}: ${summary.fetched} leídas, ` +
+          `${summary.inserted} nuevas, ${summary.duplicates} duplicadas` +
+          (summary.failedSources.length
+            ? `, ${summary.failedSources.length} fuentes con error`
+            : ""),
+      );
 
-  const [selectedId, setSelectedId] =
-    useState<string | null>(null);
-
-  const [filter, setFilter] = useState<
-    "all" | ReviewDecision
-  >("pending");
-
-  const items = records;
-
-  const selected = items.find(
-    (item) => item.id === selectedId,
-  );
-
-  const filteredItems = items.filter(
-    (item) =>
-      filter === "all" ||
-      item.decision === filter,
-  );
-
-  const pendingCount = items.filter(
-    (item) => item.decision === "pending",
-  ).length;
-
-  const approvedCount = items.filter(
-    (item) => item.decision === "approved",
-  ).length;
-
-  const rejectedCount = items.filter(
-    (item) => item.decision === "rejected",
-  ).length;
-
-  const enrichedStories =
-    selectStoriesWithIntelligence(
-      mockStories,
-      records,
-    );
-
-  const suggestedStory =
-    selected?.result.match.storyId
-      ? mockStories.find(
-          (story) =>
-            story.id ===
-            selected.result.match.storyId,
-        )
-      : undefined;
-
-  function handleProcess() {
-    const results = intelligenceFixtures.map(
-      (article) =>
-        processArticle(article, {
-          stories: mockStories,
-        }),
-    );
-
-    importResults(results);
-
-    setSelectedId(
-      (current) =>
-        current ??
-        results[0]?.article.id ??
-        null,
-    );
-
-    setFilter("pending");
+      setFilter("pending");
+      await load();
+    } catch (cause) {
+      setError(
+        cause instanceof Error ? cause.message : "La ingesta falló.",
+      );
+    } finally {
+      setBusy(false);
+    }
   }
 
-  function handleDecision(
-    decision: "approved" | "rejected",
-  ) {
-    if (!selectedId) {
-      return;
+  async function handleDecision(decision: ReviewDecision) {
+    if (!selected) return;
+
+    if (decision === "approved" && !suggestedStory) return;
+
+    setBusy(true);
+    setError(null);
+
+    try {
+      await submitDecision(
+        selected.articleId,
+        decision,
+        decision === "approved" ? suggestedStory?.id : undefined,
+      );
+
+      await Promise.all([load(), reloadStories()]);
+
+      if (decision === "pending") {
+        setFilter("pending");
+      }
+    } catch (cause) {
+      setError(
+        cause instanceof Error ? cause.message : "No se guardó la decisión.",
+      );
+    } finally {
+      setBusy(false);
     }
-
-    if (decision === "rejected") {
-      reject(selectedId);
-      return;
-    }
-
-    const record = records.find(
-      (item) => item.id === selectedId,
-    );
-
-    const storyId =
-      record?.result.match.storyId;
-
-    if (!storyId) {
-      return;
-    }
-
-    const storyExists = mockStories.some(
-      (story) => story.id === storyId,
-    );
-
-    if (!storyExists) {
-      return;
-    }
-
-    approve(selectedId, storyId);
-  }
-
-  function handleReopen() {
-    if (!selectedId) {
-      return;
-    }
-
-    reopen(selectedId);
-    setFilter("pending");
   }
 
   return (
@@ -201,46 +171,54 @@ export function IntelligenceReview() {
             SANPER / INTELLIGENCE ENGINE
           </span>
 
-          <h2>
-            Procesamiento de información
-          </h2>
+          <h2>Procesamiento de información</h2>
 
           <p>
-            Clasificación automática, extracción
-            de entidades y revisión editorial
-            de acontecimientos.
+            Clasificación automática, extracción de entidades y revisión
+            editorial de notas reales ingeridas por el servidor.
           </p>
         </div>
 
         <button
           type="button"
           className="intelligence-review__process"
-          onClick={handleProcess}
+          onClick={handleIngest}
+          disabled={busy}
         >
-          Procesar noticias de prueba
+          {busy ? "Procesando…" : "Ejecutar ingesta ahora"}
         </button>
       </header>
+
+      {message && <p className="intelligence-review__empty">{message}</p>}
+
+      {error && <p className="intelligence-review__empty">{error}</p>}
+
+      {storiesSource === "mock" && (
+        <p className="intelligence-review__empty">
+          Historias simuladas: la API de historias no respondió.
+        </p>
+      )}
 
       {/* MÉTRICAS */}
 
       <div className="intelligence-review__metrics">
         <div>
-          <strong>{items.length}</strong>
+          <strong>{stats.total}</strong>
           <span>Procesadas</span>
         </div>
 
         <div>
-          <strong>{pendingCount}</strong>
+          <strong>{stats.pending}</strong>
           <span>Pendientes</span>
         </div>
 
         <div>
-          <strong>{approvedCount}</strong>
+          <strong>{stats.approved}</strong>
           <span>Aprobadas</span>
         </div>
 
         <div>
-          <strong>{rejectedCount}</strong>
+          <strong>{stats.rejected}</strong>
           <span>Rechazadas</span>
         </div>
       </div>
@@ -248,34 +226,19 @@ export function IntelligenceReview() {
       {/* STORIES VINCULADAS */}
 
       <section className="intelligence-review__section">
-        <h4>
-          Acontecimientos y fuentes vinculadas
-        </h4>
+        <h4>Acontecimientos y fuentes vinculadas</h4>
 
         <div className="intelligence-review__stories">
-          {enrichedStories.map((story) => (
-            <div
-              key={story.id}
-              className="intelligence-review__story"
-            >
+          {stories.map((story) => (
+            <div key={story.id} className="intelligence-review__story">
               <div>
                 <strong>{story.title}</strong>
-
-                <span>
-                  {story.sectors.join(" · ")}
-                </span>
+                <span>{story.sectors.join(" · ")}</span>
               </div>
 
               <div className="intelligence-review__story-stats">
-                <span>
-                  {story.articleIds.length}
-                  {" "}artículos
-                </span>
-
-                <span>
-                  {story.sourceIds.length}
-                  {" "}fuentes
-                </span>
+                <span>{story.articleIds.length} artículos</span>
+                <span>{story.sourceIds.length} fuentes</span>
               </div>
             </div>
           ))}
@@ -296,11 +259,7 @@ export function IntelligenceReview() {
           <button
             key={value}
             type="button"
-            className={
-              filter === value
-                ? "is-active"
-                : ""
-            }
+            className={filter === value ? "is-active" : ""}
             onClick={() => {
               setFilter(value);
               setSelectedId(null);
@@ -317,53 +276,40 @@ export function IntelligenceReview() {
         {/* LISTA */}
 
         <div className="intelligence-review__list">
-          {filteredItems.length === 0 && (
+          {loading && (
+            <p className="intelligence-review__empty">Cargando…</p>
+          )}
+
+          {!loading && items.length === 0 && (
             <p className="intelligence-review__empty">
               No hay noticias en esta sección.
             </p>
           )}
 
-          {filteredItems.map((item) => (
+          {items.map((item) => (
             <button
               type="button"
-              key={item.id}
+              key={item.articleId}
               className={
-                selectedId === item.id
+                selectedId === item.articleId
                   ? "intelligence-review__item is-selected"
                   : "intelligence-review__item"
               }
-              onClick={() =>
-                setSelectedId(item.id)
-              }
+              onClick={() => setSelectedId(item.articleId)}
             >
               <small>
-                {item.result.article.sourceId}
+                {item.sourceName} · {item.language.toUpperCase()}
               </small>
 
-              <strong>
-                {item.result.article.title}
-              </strong>
+              <strong>{item.title}</strong>
 
               <span>
-                {getStatusLabel(
-                  item.result.status,
-                )}
-
+                {getStatusLabel(item.status)}
                 {" · "}
-
-                {(
-                  item.result.match.confidence *
-                  100
-                ).toFixed(1)}
-                %
+                {(item.matchConfidence * 100).toFixed(1)}%
               </span>
 
-              <small>
-                Revisión:{" "}
-                {getDecisionLabel(
-                  item.decision,
-                )}
-              </small>
+              <small>Revisión: {getDecisionLabel(item.decision)}</small>
             </button>
           ))}
         </div>
@@ -373,8 +319,8 @@ export function IntelligenceReview() {
         <div className="intelligence-review__detail">
           {!selected ? (
             <div className="intelligence-review__empty">
-              Selecciona una noticia para
-              inspeccionar el resultado del motor.
+              Selecciona una noticia para inspeccionar el resultado del
+              motor.
             </div>
           ) : (
             <>
@@ -382,104 +328,70 @@ export function IntelligenceReview() {
                 ANÁLISIS DE NOTICIA
               </span>
 
-              <h3>
-                {selected.result.article.title}
-              </h3>
+              <h3>{selected.title}</h3>
+
+              <p>{selected.description}</p>
 
               <p>
-                {selected.result.article.description}
+                <a href={selected.url} target="_blank" rel="noreferrer">
+                  Ver nota original en {selected.sourceName}
+                </a>
               </p>
 
               {/* SECTORES */}
 
               <div className="intelligence-review__section">
-                <h4>
-                  Sectores detectados
-                </h4>
+                <h4>Sectores detectados</h4>
 
                 <div className="intelligence-review__tags">
-                  {selected.result.classification.sectors.map(
-                    (sector) => (
-                      <span key={sector}>
-                        {sector}
-                      </span>
-                    ),
+                  {selected.sectors.length === 0 && (
+                    <span>Sin sector</span>
                   )}
+
+                  {selected.sectors.map((sector) => (
+                    <span key={sector}>{sector}</span>
+                  ))}
                 </div>
               </div>
 
               {/* ENTIDADES */}
 
               <div className="intelligence-review__section">
-                <h4>
-                  Entidades detectadas
-                </h4>
+                <h4>Entidades detectadas</h4>
 
                 <div className="intelligence-review__entities">
-                  {selected.result.classification.entities.length ===
-                    0 && (
-                    <span>
-                      No se detectaron entidades.
-                    </span>
+                  {selected.entities.length === 0 && (
+                    <span>No se detectaron entidades.</span>
                   )}
 
-                  {selected.result.classification.entities.map(
-                    (entity) => (
-                      <div
-                        key={`${entity.type}-${entity.name}`}
-                      >
-                        <strong>
-                          {entity.name}
-                        </strong>
-
-                        <small>
-                          {entity.type}
-                        </small>
-                      </div>
-                    ),
-                  )}
+                  {selected.entities.map((entity) => (
+                    <div key={`${entity.type}-${entity.name}`}>
+                      <strong>{entity.name}</strong>
+                      <small>{entity.type}</small>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* COINCIDENCIA */}
 
               <div className="intelligence-review__section">
-                <h4>
-                  Coincidencia sugerida
-                </h4>
+                <h4>Coincidencia sugerida</h4>
 
                 {suggestedStory ? (
                   <div className="intelligence-review__match">
-                    <span>
-                      STORY EXISTENTE
-                    </span>
-
-                    <strong>
-                      {suggestedStory.title}
-                    </strong>
-
-                    <p>
-                      {selected.result.match.reason}
-                    </p>
-
+                    <span>STORY EXISTENTE</span>
+                    <strong>{suggestedStory.title}</strong>
+                    <p>{selected.matchReason}</p>
                     <small>
                       Similitud:{" "}
-                      {(
-                        selected.result.match.confidence *
-                        100
-                      ).toFixed(1)}
-                      %
+                      {(selected.matchConfidence * 100).toFixed(1)}%
                     </small>
                   </div>
                 ) : (
                   <div className="intelligence-review__match">
-                    <strong>
-                      Sin Story candidata
-                    </strong>
-
-                    <p>
-                      {selected.result.match.reason}
-                    </p>
+                    <strong>Sin Story candidata</strong>
+                    <p>{selected.matchReason}</p>
                   </div>
                 )}
               </div>
@@ -491,10 +403,8 @@ export function IntelligenceReview() {
                   <button
                     type="button"
                     className="intelligence-review__approve"
-                    disabled={!suggestedStory}
-                    onClick={() =>
-                      handleDecision("approved")
-                    }
+                    disabled={!suggestedStory || busy}
+                    onClick={() => handleDecision("approved")}
                   >
                     Aprobar vinculación
                   </button>
@@ -502,9 +412,8 @@ export function IntelligenceReview() {
                   <button
                     type="button"
                     className="intelligence-review__reject"
-                    onClick={() =>
-                      handleDecision("rejected")
-                    }
+                    disabled={busy}
+                    onClick={() => handleDecision("rejected")}
                   >
                     Rechazar
                   </button>
@@ -512,15 +421,13 @@ export function IntelligenceReview() {
               ) : (
                 <div className="intelligence-review__decision">
                   <span>
-                    Decisión:{" "}
-                    {getDecisionLabel(
-                      selected.decision,
-                    )}
+                    Decisión: {getDecisionLabel(selected.decision)}
                   </span>
 
                   <button
                     type="button"
-                    onClick={handleReopen}
+                    disabled={busy}
+                    onClick={() => handleDecision("pending")}
                   >
                     Reabrir revisión
                   </button>

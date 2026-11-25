@@ -1,0 +1,283 @@
+/* =========================================================
+   EVENT TIMELINE · línea de tiempo bajo el mapa
+   ========================================================= */
+
+.event-timeline {
+  flex: 0 0 auto;
+
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 10px 18px 26px 14px;
+
+  border-top: 1px solid rgba(100, 140, 115, 0.16);
+
+  background: #091b15;
+
+  color: #b9d7c3;
+}
+
+.event-timeline__controls {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+}
+
+.event-timeline__play {
+  flex: 0 0 auto;
+
+  display: grid;
+  place-items: center;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+
+  border: 1px solid rgba(120, 160, 135, 0.35);
+  border-radius: 4px;
+
+  background: rgba(47, 110, 72, 0.18);
+
+  color: #d3e3d8;
+
+  cursor: pointer;
+}
+
+.event-timeline__play:hover {
+  background: rgba(66, 117, 84, 0.32);
+}
+
+.event-timeline__play svg {
+  width: 11px;
+  height: 11px;
+
+  fill: currentColor;
+}
+
+.event-timeline__label {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.event-timeline__label strong {
+  color: #e4efe8;
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.event-timeline__label span {
+  color: #71867a;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+.event-timeline__now {
+  flex: 0 0 auto;
+
+  padding: 3px 6px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #82c49b;
+
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+/* ── Pista ───────────────────────────────────────────── */
+
+.event-timeline__track {
+  position: relative;
+
+  height: 52px;
+
+  container-type: inline-size;
+
+  border-bottom: 1px solid rgba(120, 160, 135, 0.3);
+}
+
+.event-timeline__past {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(47, 110, 72, 0.04),
+    rgba(47, 110, 72, 0.16)
+  );
+
+  pointer-events: none;
+}
+
+.event-timeline__tick {
+  position: absolute;
+  bottom: -16px;
+
+  padding-left: 3px;
+
+  border-left: 1px solid rgba(120, 160, 135, 0.3);
+
+  color: #71867a;
+
+  font-size: 9px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  pointer-events: none;
+}
+
+.event-timeline__event {
+  --event-color: #a7b5ad;
+
+  position: absolute;
+  z-index: 2;
+
+  width: 9px;
+  height: 9px;
+
+  padding: 0;
+
+  border: 0;
+  border-radius: 1px;
+
+  background: var(--event-color);
+
+  transform: translateX(-50%);
+
+  cursor: pointer;
+
+  transition:
+    opacity 200ms ease,
+    transform 140ms ease;
+}
+
+.event-timeline__event--high {
+  --event-color: #e5484d;
+}
+
+.event-timeline__event--medium {
+  --event-color: #e99a18;
+}
+
+.event-timeline__event--monitoring {
+  --event-color: #a7b5ad;
+}
+
+/* Duración: del inicio a la última actualización. */
+.event-timeline__duration {
+  position: absolute;
+  left: 50%;
+  top: 4px;
+
+  height: 1px;
+  max-width: 100cqw;
+
+  background: var(--event-color);
+
+  opacity: 0.55;
+
+  pointer-events: none;
+}
+
+.event-timeline__event--future {
+  opacity: 0.28;
+}
+
+.event-timeline__event:hover,
+.event-timeline__event--highlighted {
+  z-index: 4;
+
+  transform: translateX(-50%) scale(1.5);
+}
+
+.event-timeline__event--selected {
+  z-index: 5;
+
+  box-shadow:
+    0 0 0 2px #091b15,
+    0 0 0 3.5px #f4f1e6;
+
+  transform: translateX(-50%) scale(1.4);
+}
+
+.event-timeline__cursor {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  z-index: 3;
+
+  width: 2px;
+
+  background: #f4f1e6;
+
+  transform: translateX(-1px);
+
+  pointer-events: none;
+}
+
+.event-timeline__cursor::before {
+  content: "";
+
+  position: absolute;
+  top: -3px;
+  left: -3px;
+
+  width: 8px;
+  height: 8px;
+
+  background: #f4f1e6;
+}
+
+/*
+ * El slider nativo cubre la pista para arrastrar,
+ * pero deja pasar el puntero a los acontecimientos.
+ */
+.event-timeline__range {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+
+  width: 100%;
+  height: 100%;
+
+  margin: 0;
+
+  opacity: 0;
+
+  cursor: ew-resize;
+}
+
+.event-timeline__range:focus-visible {
+  opacity: 0.25;
+}
+
+@media (max-width: 720px) {
+  .event-timeline {
+    grid-template-columns: 1fr;
+
+    gap: 8px;
+  }
+}

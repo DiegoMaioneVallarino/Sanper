@@ -1,3 +1,7 @@
+/*
+ * @deprecated GlobalEvent duplica a Story (src/shared/domain/story.ts).
+ * Sólo lo usa GlobalOverview con mockEvents; migrar a Story y borrar.
+ */
 export type EventCategory =
   | "geopolitics"
   | "economy"
@@ -46,4 +50,4 @@ export interface GlobalEvent {
 
   articleIds: string[];
   sourceIds: string[];
-}
+}

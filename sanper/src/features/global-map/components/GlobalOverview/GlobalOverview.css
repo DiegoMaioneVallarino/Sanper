@@ -82,7 +82,8 @@
 .global-overview__map-background {
   position: relative;
 
-  height: 430px;
+  /* Filtros + mapa de cuadros + línea de tiempo. */
+  height: 540px;
 
   overflow: hidden;
 
@@ -389,7 +390,7 @@
   }
 
   .global-overview__map-background {
-    height: 300px;
+    height: 420px;
   }
 
   .global-overview__events {
@@ -408,4 +409,4 @@
 
     gap: 12px 20px;
   }
-}
+}

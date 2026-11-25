@@ -1,47 +1,87 @@
-import express from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import cors from "cors";
 
-import {
-  fetchRSSArticles,
-} from "./services/rss.service";
+import { config } from "./config";
+import { pool } from "./db/pool";
+import { migrate } from "./db/migrate";
+import { ingestionRouter } from "./routes/ingestion.routes";
+import { reviewRouter } from "./routes/review.routes";
+import { storiesRouter } from "./routes/stories.routes";
+import { runIngestion } from "./services/ingestion.service";
 
 const app = express();
-const PORT = 3001;
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  }),
-);
-
+app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json());
 
-app.get("/api/health", (_req, res) => {
-  res.json({
-    status: "ok",
-    service: "sanper-ingestion",
-  });
-});
-
-app.get("/api/intelligence/articles", async (_req, res) => {
+app.get("/api/health", async (_req, res) => {
   try {
-    const articles = await fetchRSSArticles();
-
-    res.json({
-      total: articles.length,
-      articles,
-    });
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      error: "Failed to fetch RSS articles",
-    });
+    await pool.query("SELECT 1");
+    res.json({ status: "ok", service: "sanper-api", db: "ok" });
+  } catch {
+    res.status(503).json({ status: "degraded", db: "unreachable" });
   }
 });
 
-app.listen(PORT, () => {
+app.use("/api/stories", storiesRouter);
+app.use("/api/review", reviewRouter);
+app.use("/api/ingestion", ingestionRouter);
+
+app.use(
+  (
+    error: unknown,
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) => {
+    console.error("[api]", error);
+    res.status(500).json({ error: "Error interno." });
+  },
+);
+
+function scheduleIngestion(): void {
+  if (config.ingestIntervalMinutes <= 0) {
+    console.log("[ingesta] programación desactivada");
+    return;
+  }
+
+  const run = () => {
+    runIngestion("schedule").catch((error) =>
+      console.error("[ingesta] corrida fallida", error),
+    );
+  };
+
+  setInterval(run, config.ingestIntervalMinutes * 60_000);
+
+  /* Primera corrida poco después de arrancar. */
+  setTimeout(run, 5_000);
+
   console.log(
-    `SanPer Ingestion Server: http://localhost:${PORT}`,
+    `[ingesta] cada ${config.ingestIntervalMinutes} min`,
   );
+}
+
+async function start(): Promise<void> {
+  await migrate();
+
+  if (!config.editorToken) {
+    console.warn(
+      "[api] EDITOR_TOKEN vacío: las acciones editoriales no piden token (sólo para desarrollo).",
+    );
+  }
+
+  app.listen(config.port, () => {
+    console.log(`Sanper API: http://localhost:${config.port}`);
+  });
+
+  scheduleIngestion();
+}
+
+start().catch((error) => {
+  console.error(error);
+  process.exit(1);
 });
